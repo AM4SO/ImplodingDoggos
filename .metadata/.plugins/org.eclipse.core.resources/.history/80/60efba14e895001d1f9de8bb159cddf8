@@ -1,0 +1,10 @@
+package gameServer;
+
+public class Card {
+	public CardType cardType;
+	public BooleanVariable neutralised;
+	public Card(CardType type) {
+		cardType = type;
+		neutralised = new BooleanVariable(false);
+	}
+}

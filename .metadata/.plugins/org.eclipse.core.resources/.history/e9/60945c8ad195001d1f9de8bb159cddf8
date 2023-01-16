@@ -1,0 +1,17 @@
+package gameServer;
+
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
+
+public class EventSystem {
+	
+}
+class Event{
+	ArrayList<Runnable> onInvoked;
+	public Event() {
+		onInvoked = new ArrayList<Runnable>();
+		onInvoked.get(0).run();
+		Runnable x = () -> {};
+	}
+}

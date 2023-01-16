@@ -1,0 +1,26 @@
+package gameServer;
+
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
+
+public class EventSystem {
+	public static Event cardNeutralised = new Event();
+	public EventSystem() {
+		cardNeutralised.onInvoked.add((Card card) -> {
+			
+		});
+	}
+	
+}
+class Event{
+	ArrayList<Runnable> onInvoked;
+	public Event() {
+		onInvoked = new ArrayList<Runnable>();
+	}
+	public <T> invoke<T>(T arg) {
+		for (Runnable r: onInvoked) {
+			r.run();
+		}
+	}
+}

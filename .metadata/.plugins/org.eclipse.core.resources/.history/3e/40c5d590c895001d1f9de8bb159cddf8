@@ -1,0 +1,13 @@
+package gameServer;
+
+public class ExplodingKittensUtils {
+	public void waitTimeOrTrue(int milliseconds, BooleanVariable boolVar,
+			boolean valueToSetOnComplete) {
+		long start = System.nanoTime();
+		while (System.nanoTime() - start < milliseconds && 
+				!(boolVar.value==valueToSetOnComplete)) {
+			continue;
+		}
+		boolVar.set();
+	}
+}

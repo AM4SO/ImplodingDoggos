@@ -10,10 +10,15 @@ import java.util.function.Consumer;
 
 public class GameServer {
 	public java.util.concurrent.Executor thread;
+	static GameServer game;
+	
 	public ArrayList<Player> players;
 	public CardStack drawPile;
 	public int playerGo = 0;
+	public ArrayList<Card> disposePile;
 	public GameServer(int port) {
+		GameServer.game = this;
+		disposePile = new ArrayList<Card>();
 		players = new ArrayList<Player>();
 		players.add(new Player(this));
 		players.add(new Player(this));
@@ -23,10 +28,9 @@ public class GameServer {
 		while (Player.totalPlayers - Player.playersDead > 1) {
 			Player plr = players.get(playerGo);
 			plr.startTurn();
-			waitTimeOrTrue(10000, plr.hasTurn, false);
+			ExplodingKittensUtils.waitTimeOrTrue(10000, plr.turnEnded, true);
 			plr.drawCard();
 		}
-		
 	}
 	public void startServer() {
 
@@ -34,43 +38,18 @@ public class GameServer {
 	public void awaitPlayers() {
 		
 	}
-	public void waitTimeOrTrue(int milliseconds, BooleanVariable boolVar,
-			boolean valueToSetOnComplete) {
-		long start = System.nanoTime();
-		while (System.nanoTime() - start < milliseconds && 
-				!(boolVar.value==valueToSetOnComplete)) {
-			continue;
-		}
-		boolVar.set();
+	public static void onCardNeutralised(Object Card) {
+		Card card = (Card)Card;
+		card.neutralised.set();
 	}
-}
-
-class BooleanVariable{
-	boolean value;
-	private boolean defaultVal;
-	private Consumer<Void> onSet;
-	BooleanVariable(boolean value, Consumer<Void> setFunc) {
-		this.value = value;
-		defaultVal = value;
-		onSet = setFunc;
+	public static void onCardDrawn(Object Card) {
+		Card card = (Card)Card;
+		if (card.cardType != CardType.ExplodingKitten)
+			game.disposePile.add(card);
 	}
-	BooleanVariable(boolean value) {
-		this.value = value;
-		defaultVal = value;
-		onSet = this::get;
-	}
-	public boolean set() {
-		value = !defaultVal;
-		onSet.accept(null);
-		return value;
-	}public boolean reset() {
-		value = defaultVal;
-		return value;
-	}
-	public boolean get() {
-		return value;
-	}public boolean get(Void thing) {
-		return value;
+	public static void onExplodingKittenReplaced(Object Card) {
+		Card card = (Card)Card;
+		card.booleanGPA.set();
 	}
 	
 }

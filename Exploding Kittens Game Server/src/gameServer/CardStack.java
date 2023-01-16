@@ -13,7 +13,9 @@ public class CardStack {
 		// TODO Auto-generated constructor stub
 	}
 	public Card drawCard() {
-		return cards.pop();
+		Card c = cards.pop();
+		EventSystem.cardDrawn.invoke(c);
+		return c;
 	}
 
 }

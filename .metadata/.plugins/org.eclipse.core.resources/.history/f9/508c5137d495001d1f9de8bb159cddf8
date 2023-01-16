@@ -1,0 +1,38 @@
+package gameServer;
+
+import java.io.IOException;
+import java.net.*;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+
+public class GameServer {
+	public java.util.concurrent.Executor thread;
+	public ArrayList<Player> players;
+	public CardStack drawPile;
+	public int playerGo = 0;
+	public GameServer(int port) {
+		players = new ArrayList<Player>();
+		players.add(new Player(this));
+		players.add(new Player(this));
+		
+		drawPile = new CardStack();
+		
+		while (Player.totalPlayers - Player.playersDead > 1) {
+			Player plr = players.get(playerGo);
+			plr.startTurn();
+			ExplodingKittensUtils.waitTimeOrTrue(10000, plr.turnEnded, true);
+			plr.drawCard();
+		}
+		
+	}
+	public void startServer() {
+
+	}
+	public void awaitPlayers() {
+		
+	}
+	
+}
