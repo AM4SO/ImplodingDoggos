@@ -39,7 +39,7 @@ public class Player {
 			}else {
 				// Tell client/player
 				// Another wait for them to take an action, i.e. place exploding kitten in deck.
-				if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
+				if (ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
 					game.drawPile.cards.push(card);
 				// if no action after x seconds, place wherever
 				//if (!card.booleanGPA.value) game.drawPile.cards.push(card);
