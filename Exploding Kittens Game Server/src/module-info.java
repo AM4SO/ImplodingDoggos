@@ -6,6 +6,7 @@
  *
  */
 module gameSever {
+	requires java.base;
 	
 	
 }
