@@ -1,0 +1,17 @@
+package gameServer;
+
+import java.io.IOException;
+import java.net.*;
+
+public class GameServer {
+	public java.net.ServerSocket listener;
+	public void startServer(int port) {
+		try {
+			listener = new java.net.ServerSocket(port);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}

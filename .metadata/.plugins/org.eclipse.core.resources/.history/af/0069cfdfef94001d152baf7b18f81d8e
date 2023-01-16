@@ -1,0 +1,9 @@
+package gameServer;
+
+public class ServerListener extends Thread {
+
+	public void run() {
+		
+	}
+
+}

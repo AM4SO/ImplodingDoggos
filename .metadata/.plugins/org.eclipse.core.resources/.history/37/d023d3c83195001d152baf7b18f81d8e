@@ -1,0 +1,12 @@
+package gameServer;
+
+import java.util.Stack;
+
+public class CardStack {
+	
+	
+	public CardStack() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

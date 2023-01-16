@@ -1,0 +1,12 @@
+package gameServer;
+
+import java.util.Stack;
+
+public class Hand {
+	
+	
+	public Hand() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

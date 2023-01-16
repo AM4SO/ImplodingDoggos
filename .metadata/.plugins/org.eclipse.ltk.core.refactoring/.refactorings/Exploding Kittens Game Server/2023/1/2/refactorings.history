@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;gameServer.Hand&apos; to &apos;CardStack&apos;&#x0D;&#x0A;- Original project: &apos;Exploding Kittens Game Server&apos;&#x0D;&#x0A;- Original element: &apos;gameServer.Hand&apos;&#x0D;&#x0A;- Renamed element: &apos;gameServer.CardStack&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;Hand&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;gameServer{Hand.java[Hand" matchStrategy="1" name="CardStack" qualified="false" references="true" similarDeclarations="false" stamp="1673800062990" textual="false" version="1.0"/>
+</session>
