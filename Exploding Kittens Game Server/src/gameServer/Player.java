@@ -3,15 +3,18 @@ package gameServer;
 import java.util.function.Consumer;
 
 public class Player {
-	static int totalPlayers = 0, playersDead = 0;
+	static int totalPlayers = 0, playersDead = 0, idCount = 0;
 	//public BooleanVariable hasTurn;
-	public BooleanVariable turnEnded;
+	public BooleanVariable turnEnded, cardDrawn;
 	private GameServer game;
+	public int playerId;
 	public Hand cards;
 	public Player(GameServer game) {
 		this.game = game;
 		Player.totalPlayers++;
-		turnEnded = new BooleanVariable(false);//, (Consumer<Void>)this::endTurn
+		turnEnded = new BooleanVariable(false);
+		cardDrawn = new BooleanVariable(false);
+		playerId = Player.idCount++;
 	}
 	public void die() {
 		Player.playersDead++;
@@ -26,16 +29,16 @@ public class Player {
 		turnEnded.set();
 	}
 	public void drawCard() {
-		Card card = game.drawPile.drawCard();
+		Card card = game.drawPile.drawCard(this);
 		// tell client what card drawn
 		if (card.cardType == CardType.ExplodingKitten) {
 			/// tell client exploding kitten gonna kill.
 			/// if not diffused within x seconds, die player.
-			ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false);
 			
-			if (!card.neutralised.value) {
+			
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false)) {
+				card.neutralised.reset();
 				die();
-				game.disposePile.add(card);
 			}else {
 				// Tell client/player
 				// Another wait for them to take an action, i.e. place exploding kitten in deck.
@@ -45,6 +48,7 @@ public class Player {
 				//if (!card.booleanGPA.value) game.drawPile.cards.push(card);
 				card.booleanGPA.reset();
 			}
+			card.neutralised.reset();
 		}
 	}
 }

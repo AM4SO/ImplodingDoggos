@@ -1,9 +1,0 @@
-package gameServer;
-
-public class GameServer {
-	
-	public void startServer(int port) {
-		
-	}
-	
-}

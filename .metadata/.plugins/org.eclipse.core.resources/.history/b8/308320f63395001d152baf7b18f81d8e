@@ -1,6 +1,0 @@
-package gameServer;
-
-public enum CardType {
-	ExplodingKitten;
-	Defuse;
-}

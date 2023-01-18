@@ -28,7 +28,7 @@ public class GameServer {
 		while (Player.totalPlayers - Player.playersDead > 1) {
 			Player plr = players.get(playerGo);
 			plr.startTurn();
-			ExplodingKittensUtils.waitTimeOrTrue(10000, plr.turnEnded, true);
+			ExplodingKittensUtils.waitTimeOrTrue(10000, plr.cardDrawn);
 			plr.drawCard();
 		}
 	}
@@ -42,14 +42,19 @@ public class GameServer {
 		Card card = (Card)Card;
 		card.neutralised.set();
 	}
-	public static void onCardDrawn(Object Card) {
-		Card card = (Card)Card;
-		if (card.cardType != CardType.ExplodingKitten)
-			game.disposePile.add(card);
+	public static void onCardDrawn(Object plrCardPair) {
+		PlrCardPair playerCard = (PlrCardPair) plrCardPair;
+		if(playerCard.card.cardType != CardType.ExplodingKitten)
+			game.disposePile.add(playerCard.card);
+		playerCard.player.cardDrawn.set();
 	}
 	public static void onExplodingKittenReplaced(Object Card) {
 		Card card = (Card)Card;
 		card.booleanGPA.set();
+	}
+	public static void onTurnEnded(Object plr) {
+		Player player = (Player) plr;
+		player.turnEnded.set();
 	}
 	
 }

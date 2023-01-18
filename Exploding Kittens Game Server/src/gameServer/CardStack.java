@@ -12,10 +12,18 @@ public class CardStack {
 		}
 		// TODO Auto-generated constructor stub
 	}
-	public Card drawCard() {
+	public Card drawCard(Player plr) {
 		Card c = cards.pop();
-		EventSystem.cardDrawn.invoke(c);
+		EventSystem.cardDrawn.invoke(new PlrCardPair(plr, c));
 		return c;
 	}
 
+}
+class PlrCardPair {
+	Player player;
+	Card card;
+	public PlrCardPair(Player plr, Card c) {
+		this.player = plr;
+		this.card = c;
+	}
 }

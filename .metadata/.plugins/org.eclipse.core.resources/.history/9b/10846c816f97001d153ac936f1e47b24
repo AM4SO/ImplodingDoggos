@@ -1,0 +1,59 @@
+package gameServer;
+
+import java.io.IOException;
+import java.net.*;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Timer;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
+
+public class GameServer {
+	public java.util.concurrent.Executor thread;
+	static GameServer game;
+	
+	public ArrayList<Player> players;
+	public CardStack drawPile;
+	public int playerGo = 0;
+	public ArrayList<Card> disposePile;
+	public GameServer(int port) {
+		GameServer.game = this;
+		disposePile = new ArrayList<Card>();
+		players = new ArrayList<Player>();
+		players.add(new Player(this));
+		players.add(new Player(this));
+		
+		drawPile = new CardStack();
+		
+		while (Player.totalPlayers - Player.playersDead > 1) {
+			Player plr = players.get(playerGo);
+			plr.startTurn();
+			ExplodingKittensUtils.waitTimeOrTrue(10000, plr.cardDrawn);
+			plr.drawCard();
+		}
+	}
+	public void startServer() {
+
+	}
+	public void awaitPlayers() {
+		
+	}
+	public static void onCardNeutralised(Object Card) {
+		Card card = (Card)Card;
+		card.neutralised.set();
+	}
+	public static void onCardDrawn(Object plrCardPair) {
+		PlrCardPair playerCard = (PlrCardPair) plrCardPair;
+		if(playerCard.card.cardType != CardType.ExplodingKitten)
+			game.disposePile.add(playerCard.card);
+	}
+	public static void onExplodingKittenReplaced(Object Card) {
+		Card card = (Card)Card;
+		card.booleanGPA.set();
+	}
+	public static void onTurnEnded(Object plr) {
+		Player player = (Player) plr;
+		player.turnEnded.set();
+	}
+	
+}

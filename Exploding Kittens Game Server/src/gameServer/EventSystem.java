@@ -8,9 +8,11 @@ import java.util.function.Consumer;
 public class EventSystem {
 	public static Event cardNeutralised = new Event();
 	public static Event cardDrawn = new Event();
+	public static Event explodingKittenCardReplaced = new Event();
 	public EventSystem() {
 		cardNeutralised.onInvoked.add(GameServer::onCardNeutralised);
 		cardDrawn.onInvoked.add(GameServer::onCardDrawn);
+		explodingKittenCardReplaced.onInvoked.add(GameServer::onExplodingKittenReplaced);
 	}
 	
 }
