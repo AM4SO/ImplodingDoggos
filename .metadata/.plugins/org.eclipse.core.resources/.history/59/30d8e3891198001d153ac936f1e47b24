@@ -1,0 +1,21 @@
+package gameServer;
+
+public class GameTestingPlayer extends Player {
+	public GameTestingPlayer(GameServer game) {
+		super(game);
+	}
+	@Override
+	public void startTurn() {
+		super.startTurn();
+		System.out.println(name.concat("'s turn..."));
+	}
+	@Override
+	public void die() {
+		super.die();
+		System.out.println(name.concat(" has died'd"));
+	}
+	@Override
+	public void drawCard() {
+		super.drawCard(true);
+	}
+}

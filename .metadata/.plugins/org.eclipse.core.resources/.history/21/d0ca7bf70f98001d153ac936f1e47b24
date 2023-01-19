@@ -1,0 +1,11 @@
+package gameServer;
+
+public class GameTestingPlayer extends Player {
+	public GameTestingPlayer(GameServer game) {
+		super(game);
+	}
+	@Override
+	public void startTurn() {
+		
+	}
+}

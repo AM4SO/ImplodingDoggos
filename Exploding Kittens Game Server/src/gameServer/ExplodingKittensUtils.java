@@ -3,16 +3,17 @@ package gameServer;
 import java.util.function.Consumer;
 
 public class ExplodingKittensUtils {
-	public static boolean waitTimeOrTrue(int milliseconds, BooleanVariable boolVar,
+	public static boolean waitTimeOrTrue(long milliseconds, BooleanVariable boolVar,
 			boolean setOnEnd) {
 		long start = System.nanoTime();
+		milliseconds *= 1000000;
 		while (System.nanoTime() - start < milliseconds && 
 				(boolVar.value==boolVar.defaultVal)) {
 			continue;
 		}
+		boolean ret = boolVar.value != boolVar.defaultVal;
 		if (setOnEnd) boolVar.set();
-		if (boolVar.value != boolVar.defaultVal) return true;
-		return false;
+		return ret;
 	}public static boolean waitTimeOrTrue(int milliseconds, BooleanVariable boolVar) {
 		return waitTimeOrTrue(milliseconds, boolVar, false);
 	}

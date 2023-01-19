@@ -9,10 +9,13 @@ public class EventSystem {
 	public static Event cardNeutralised = new Event();
 	public static Event cardDrawn = new Event();
 	public static Event explodingKittenCardReplaced = new Event();
-	public EventSystem() {
+	public static void Initialise() {
 		cardNeutralised.onInvoked.add(GameServer::onCardNeutralised);
 		cardDrawn.onInvoked.add(GameServer::onCardDrawn);
 		explodingKittenCardReplaced.onInvoked.add(GameServer::onExplodingKittenReplaced);
+	}
+	public EventSystem() {
+		
 	}
 	
 }

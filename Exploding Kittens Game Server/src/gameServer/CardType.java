@@ -2,8 +2,12 @@ package gameServer;
 
 public enum CardType {
 	ExplodingKitten,
-	Diffuse,
+	Defuse,
 	Shuffle,
 	SeeTheFuture,
-	
+	Attack,
+	Nope,
+	Skip,
+	CatCard,
+	Favour,
 }

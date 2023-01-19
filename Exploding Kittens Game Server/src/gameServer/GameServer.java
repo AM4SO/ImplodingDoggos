@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
@@ -11,29 +12,45 @@ import java.util.function.Consumer;
 public class GameServer {
 	public java.util.concurrent.Executor thread;
 	static GameServer game;
-	
+	public static Random random = new Random();
 	public ArrayList<Player> players;
 	public CardStack drawPile;
 	public int playerGo = 0;
 	public ArrayList<Card> disposePile;
 	public GameServer(int port) {
 		GameServer.game = this;
+		EventSystem.Initialise();
 		disposePile = new ArrayList<Card>();
 		players = new ArrayList<Player>();
-		players.add(new Player(this));
-		players.add(new Player(this));
+		players.add(new GameTestingPlayer(this));
+		players.add(new GameTestingPlayer(this));
+
+
+		drawPile = new CardStack(players.size());
 		
-		drawPile = new CardStack();
+		for (Player p: players) {
+			p.cards.addCard(new Card(CardType.Defuse));
+			for (int i = 0; i < 7; i++) {
+				p.cards.addCard(drawPile.cards.pop());
+			}
+		}
+		drawPile.insertImploadingDoggos();
 		
+		System.out.println("Initialised game");
+	}
+	public void startServer() {
+		System.out.println("Starting game");
 		while (Player.totalPlayers - Player.playersDead > 1) {
 			Player plr = players.get(playerGo);
 			plr.startTurn();
-			ExplodingKittensUtils.waitTimeOrTrue(10000, plr.cardDrawn);
-			plr.drawCard();
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) {
+				System.out.println(plr.name.concat(" is being forced to draw"));
+				plr.drawCard();
+			}
+			plr.cardDrawn.reset(); // Forgetting this led to infinitely switching 
+			plr.endTurn(); ///        between player turns without drawing cards
+			playerGo = (playerGo + 1) % Player.totalPlayers;
 		}
-	}
-	public void startServer() {
-
 	}
 	public void awaitPlayers() {
 		
@@ -58,3 +75,4 @@ public class GameServer {
 	}
 	
 }
+// should the way the program works be different to what i say it is in the design.

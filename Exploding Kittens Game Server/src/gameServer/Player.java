@@ -1,5 +1,6 @@
 package gameServer;
 
+import java.net.Socket;
 import java.util.function.Consumer;
 
 public class Player {
@@ -9,27 +10,34 @@ public class Player {
 	private GameServer game;
 	public int playerId;
 	public Hand cards;
+	public String name;
 	public Player(GameServer game) {
 		this.game = game;
 		Player.totalPlayers++;
 		turnEnded = new BooleanVariable(false);
 		cardDrawn = new BooleanVariable(false);
 		playerId = Player.idCount++;
+		name = "player ".concat(Integer.toString(playerId));
+		cards = new Hand();
 	}
 	public void die() {
 		Player.playersDead++;
 	}
 	public void startTurn() {
-		turnEnded.set();
+		turnEnded.reset();
 		// do some player informing stuff init.
 	}
 	public void endTurn() {
 		turnEnded.set();
 	}public void endTurn(Void thing) {
-		turnEnded.set();
+		endTurn();
 	}
 	public void drawCard() {
+		drawCard(false);
+	}
+	public void drawCard(boolean debug) {
 		Card card = game.drawPile.drawCard(this);
+		if(debug) System.out.println(name.concat(" has drawn ").concat(card.cardType.toString()));
 		// tell client what card drawn
 		if (card.cardType == CardType.ExplodingKitten) {
 			/// tell client exploding kitten gonna kill.
@@ -37,6 +45,7 @@ public class Player {
 			
 			
 			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false)) {
+				if (debug) System.out.println(name.concat(" has failed to diffuse the exploding kitten and has died'd"));
 				card.neutralised.reset();
 				die();
 			}else {
@@ -44,9 +53,11 @@ public class Player {
 				// Another wait for them to take an action, i.e. place exploding kitten in deck.
 				if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
 					game.drawPile.cards.push(card);
+				if (debug) System.out.println(name.concat(" has placed the exploding kitten on the top of the deck"));
 				// if no action after x seconds, place wherever
 				//if (!card.booleanGPA.value) game.drawPile.cards.push(card);
 				card.booleanGPA.reset();
+				
 			}
 			card.neutralised.reset();
 		}
