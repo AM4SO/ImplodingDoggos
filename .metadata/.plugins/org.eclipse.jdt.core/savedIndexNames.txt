@@ -1,2 +1,8 @@
+<<<<<<< HEAD
 INDEX VERSION 1.131+E:\Users\daany\source\repos\Exploding Kittens\.metadata\.plugins\org.eclipse.jdt.core
+=======
+INDEX VERSION 1.131+/home/daanyal/Documents/GitHub/ExplodingKittens/.metadata/.plugins/org.eclipse.jdt.core
+1357890687.index
+>>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
 1865797976.index
+2435738831.index

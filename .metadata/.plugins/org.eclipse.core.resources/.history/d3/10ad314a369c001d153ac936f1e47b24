@@ -48,9 +48,7 @@ public class Player {
 		// do some player informing stuff init.
 	}
 	public void endTurn() {
-		while (cardsPlaying.size() > 0) 
-		{
-			Card c = cardsPlaying.remove(0);
+		for(Card c : cardsPlaying) {
 			cardsPlaying.remove(c);
 			game.disposePile.add(c);
 		}
