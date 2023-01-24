@@ -11,7 +11,10 @@ public class EventSystem {
 	public static Event explodingKittenCardReplaced = new Event();
 	public static Event cardPlayed = new Event();
 <<<<<<< HEAD
+<<<<<<< HEAD
 	public static Event tryDrawCard = new Event();
+=======
+>>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
 =======
 >>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
 	public static void Initialise() {
@@ -20,7 +23,10 @@ public class EventSystem {
 		explodingKittenCardReplaced.onInvoked.add(GameServer::onExplodingKittenReplaced);
 		cardPlayed.onInvoked.add(GameServer::onCardPlayed);
 <<<<<<< HEAD
+<<<<<<< HEAD
 		tryDrawCard.onInvoked.add(GameServer::onTryDrawCard);
+=======
+>>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
 =======
 >>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
 	}

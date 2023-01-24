@@ -1,0 +1,153 @@
+package gameServer;
+
+import java.net.Socket;
+import java.util.function.Consumer;
+import java.util.ArrayList;
+
+public class Player {
+	static int totalPlayers = 0, playersDead = 0, idCount = 0;
+	private static ArrayList<Player> players = new ArrayList<Player>();
+	//public BooleanVariable hasTurn;
+	public BooleanVariable turnEnded, cardDrawn;
+	private GameServer game;
+	public int playerId;
+	public Hand cards;
+	public String name;
+	public boolean isDead;
+<<<<<<< HEAD
+	public UserCommunicator userCommunicator;
+	private ArrayList<Card> cardsPlaying;
+	public int turnsLeft;
+	
+	public static Player getPlayerById(int playerId) {
+		for(Player p : Player.players) {
+			if (playerId == p.playerId) return p;
+		}
+		return null;
+	}
+	
+	public Player(GameServer game) {
+		Player.players.add(this);
+=======
+	public Player(GameServer game) {
+>>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
+		isDead = false;
+		this.game = game;
+		Player.totalPlayers++;
+		turnEnded = new BooleanVariable(false);
+		cardDrawn = new BooleanVariable(false);
+		playerId = Player.idCount++;
+		name = "player ".concat(Integer.toString(playerId));
+		cards = new Hand();
+		cardsPlaying = new ArrayList<Card>();
+		turnsLeft = 0;
+	}
+	public void die() {
+		isDead = true;
+		Player.playersDead++;
+	}
+	public void startTurn() {
+		turnsLeft = 1; 
+		turnEnded.reset();
+		// do some player informing stuff init.
+	}
+	public void endTurn() {
+		while (cardsPlaying.size() > 0) 
+		{
+			Card c = cardsPlaying.remove(0); 
+			cardsPlaying.remove(c);
+			game.disposePile.add(c);
+		}
+		turnEnded.set();
+	}public void endTurn(Void thing) {
+		endTurn();
+	}
+	public void playCard(int cardId) {
+		
+	}
+	public void drawCard() {
+		drawCard(false);
+	}
+	public void drawCard(boolean debug) {
+		Card card = game.drawPile.drawCard(this);
+		boolean addCard = true;
+<<<<<<< HEAD
+		if (addCard) cards.addCard(card);
+		if(debug) System.out.println(name.concat(" has drawn ").concat(card.cardType.toString()));
+		// tell client what card drawn
+		if (card.cardType == CardType.ExplodingKitten) {
+			playCard(card);
+			return;
+			/// tell client exploding kitten gonna kill?
+			/// if not diffused within x seconds, die player.			
+		}
+		// tell user turn successfully ended
+	}
+	public void playCard(Card c) {playCard(c, null);}
+	public void playCard(Card card, Object args) {
+		// check card is in hand -- probably done by caller of this function
+		// remove card from hand
+		// depending on card type, either place in dispose pile, or place it in the 
+		// player's playing pile
+		cards.removeCard(card);
+		switch (card.cardType) {
+		case ExplodingKitten:
+			playExplodingKitten(card);
+			break;
+		case Attack://////////////////////////////////////////// LEFT OFF HERE -------- Forgetn't to account for Nope
+			int playerId = (int) args;
+			Player plr = Player.getPlayerById(playerId);
+			game.playerGo = game.players.indexOf(plr);
+			endTurn();
+		default:
+			break;
+		}
+		
+		cardsPlaying.add(card);
+	}
+	public void playExplodingKitten(Card card) {
+		if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false)) {
+			System.out.println(name.concat(" has failed to defuse the exploding kitten and has died'd"));
+			card.neutralised.reset();
+			die();
+		}else {
+			// Tell client/player
+			// Another wait for them to take an action, i.e. place exploding kitten in deck.
+			// if no action after x seconds, place wherever
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
+				game.drawPile.cards.push(card);
+			System.out.println(name.concat(" has placed the exploding kitten on the top of the deck"));
+			card.booleanGPA.reset();
+		}
+		card.neutralised.reset();
+=======
+		if(debug) System.out.println(name.concat(" has drawn ").concat(card.cardType.toString()));
+		// tell client what card drawn
+		if (card.cardType == CardType.ExplodingKitten) {
+			addCard = false;
+			/// tell client exploding kitten gonna kill?
+			/// if not diffused within x seconds, die player.
+			
+			
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false)) {
+				if (debug) System.out.println(name.concat(" has failed to defuse the exploding kitten and has died'd"));
+				card.neutralised.reset();
+				die();
+			}else {
+				// Tell client/player
+				// Another wait for them to take an action, i.e. place exploding kitten in deck.
+				// if no action after x seconds, place wherever
+				if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
+					game.drawPile.cards.push(card);
+				if (debug) System.out.println(name.concat(" has placed the exploding kitten on the top of the deck"));
+				card.booleanGPA.reset();
+				
+			}
+			card.neutralised.reset();
+			
+		}
+		if (addCard) cards.addCard(card);
+		// tell user turn successfully ended
+>>>>>>> 78105e50e9af9bf696fdcf02c08a908aca1f1f64
+	}
+}
