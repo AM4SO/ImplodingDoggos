@@ -1,0 +1,35 @@
+package gameServer;
+
+import java.net.Socket;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+public class UserCommunicator {
+	public UserCommunicator() {
+		
+	}
+	public void sendRawMessage(byte[] data) throws IOException { // probably useless function. 
+		/////////Just exists to decompose task of communicating with the user.
+	}public void sendRawMessage(String data) {
+		byte[] bytes = data.getBytes();
+		sendRawMessage(bytes);
+	}
+}
+class PlayerCommunicator extends UserCommunicator{
+	private Socket socket;
+	private OutputStream sendStream;
+	public PlayerCommunicator(Socket sock) {
+		socket = sock;
+		try {
+			sendStream = socket.getOutputStream();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public void sendRawMessage(byte[] data) throws IOException {
+		sendStream.write(data);
+	}
+}

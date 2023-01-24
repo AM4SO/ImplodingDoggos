@@ -1,0 +1,24 @@
+package gameServer;
+
+public enum CardType {
+	/// Base game
+	ExplodingKitten,
+	Defuse,
+	Shuffle,
+	SeeTheFuture,
+	Attack,
+	Nope,
+	Skip,
+	CatCard,
+	Favour,
+	
+	/// Streaking Kittens
+	StreakingKitten,
+	CatomicBomb,
+	SuperSkip,
+	CurseOfTheCatButt,
+	// SeeTheFutureX5
+	AlterTheFuture,
+	SwapTopAndBottom,
+	
+}

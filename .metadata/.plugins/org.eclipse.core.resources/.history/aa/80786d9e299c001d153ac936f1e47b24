@@ -1,0 +1,85 @@
+package gameServer;
+
+import java.net.Socket;
+import java.util.function.Consumer;
+
+public class Player {
+	static int totalPlayers = 0, playersDead = 0, idCount = 0;
+	//public BooleanVariable hasTurn;
+	public BooleanVariable turnEnded, cardDrawn;
+	private GameServer game;
+	public int playerId;
+	public Hand cards;
+	public String name;
+	public boolean isDead;
+	public UserCommunicator userCommunicator;
+	private ArrayList<Card> cardsPlaying;
+	
+	public Player(GameServer game) {
+		isDead = false;
+		this.game = game;
+		Player.totalPlayers++;
+		turnEnded = new BooleanVariable(false);
+		cardDrawn = new BooleanVariable(false);
+		playerId = Player.idCount++;
+		name = "player ".concat(Integer.toString(playerId));
+		cards = new Hand();
+	}
+	public void die() {
+		isDead = true;
+		Player.playersDead++;
+	}
+	public void startTurn() {
+		turnEnded.reset();
+		// do some player informing stuff init.
+	}
+	public void endTurn() {
+		turnEnded.set();
+	}public void endTurn(Void thing) {
+		endTurn();
+	}
+	public void playCard(int cardId) {
+		
+	}
+	public void drawCard() {
+		drawCard(false);
+	}
+	public void drawCard(boolean debug) {
+		Card card = game.drawPile.drawCard(this);
+		boolean addCard = true;
+		if (addCard) cards.addCard(card);
+		if(debug) System.out.println(name.concat(" has drawn ").concat(card.cardType.toString()));
+		// tell client what card drawn
+		if (card.cardType == CardType.ExplodingKitten) {
+			playCard(card);
+			return;
+			addCard = false;
+			/// tell client exploding kitten gonna kill?
+			/// if not diffused within x seconds, die player.
+			
+			
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false)) {
+				if (debug) System.out.println(name.concat(" has failed to defuse the exploding kitten and has died'd"));
+				card.neutralised.reset();
+				die();
+			}else {
+				// Tell client/player
+				// Another wait for them to take an action, i.e. place exploding kitten in deck.
+				// if no action after x seconds, place wherever
+				if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
+					game.drawPile.cards.push(card);
+				if (debug) System.out.println(name.concat(" has placed the exploding kitten on the top of the deck"));
+				card.booleanGPA.reset();
+				
+			}
+			card.neutralised.reset();
+			
+		}
+		// tell user turn successfully ended
+	}
+	public void playCard(Card card) {
+		// remove card from hand
+		// depending on card type, either place in dispose pile, or place it in the 
+		// player's playing pile
+	}
+}

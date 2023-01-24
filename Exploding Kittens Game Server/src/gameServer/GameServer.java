@@ -10,6 +10,8 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class GameServer {
+	static final boolean debug = true;
+	
 	public java.util.concurrent.Executor thread;
 	static GameServer game;
 	public static Random random = new Random();
@@ -17,14 +19,18 @@ public class GameServer {
 	public CardStack drawPile;
 	public int playerGo = 0;
 	public ArrayList<Card> disposePile;
+	public boolean waitingForPlayers = true;
 	public GameServer(int port) {
 		GameServer.game = this;
 		EventSystem.Initialise();
 		disposePile = new ArrayList<Card>();
 		players = new ArrayList<Player>();
+		
+		players.add(new GameTestingPlayer(this));
 		players.add(new GameTestingPlayer(this));
 		players.add(new GameTestingPlayer(this));
 
+		waitingForPlayers = false;
 
 		drawPile = new CardStack(players.size());
 		
@@ -42,11 +48,20 @@ public class GameServer {
 		System.out.println("Starting game");
 		while (Player.totalPlayers - Player.playersDead > 1) {
 			Player plr = players.get(playerGo);
-			plr.startTurn();
-			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) {
-				System.out.println(plr.name.concat(" is being forced to draw"));
-				plr.drawCard();
+			if (plr.isDead) {
+				playerGo = (playerGo + 1) % Player.totalPlayers;
+				continue;
 			}
+			plr.startTurn();
+			//if (!ExplodingKittensUtils.waitTimeOrTrue(25000, plr.turnEnded))                    ------ HERE ------ 
+			//////////////// maybe cut this and instead start turn and wait until turn ended or time passed.
+			//////////////// would be cleaner and all the shit to do with the player can be handled in the player object.
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) { 
+				System.out.println(plr.name.concat(" is being forced to draw"));
+				EventSystem.tryDrawCard.invoke(plr);
+				//plr.drawCard();
+			}
+			////////////////////////////
 			plr.cardDrawn.reset(); // Forgetting this led to infinitely switching 
 			plr.endTurn(); ///        between player turns without drawing cards
 			playerGo = (playerGo + 1) % Player.totalPlayers;
@@ -59,10 +74,22 @@ public class GameServer {
 		Card card = (Card)Card;
 		card.neutralised.set();
 	}
-	public static void onCardDrawn(Object plrCardPair) {
-		PlrCardPair playerCard = (PlrCardPair) plrCardPair;
-		if(playerCard.card.cardType != CardType.ExplodingKitten)
-			game.disposePile.add(playerCard.card);
+	public static void onTryDrawCard(Object player) { // called if player tells server they want to draw a card
+		if (game.players.get(game.playerGo) != (Player) player) return;// or if a player is forced to draw.
+		Player plr = (Player) player;
+		plr.drawCard(debug);
+	}
+	public static void onTryPlayCard(Object plrCard) { // card will be found by invoker of this event (don't forget to do it u fucking idiot)
+		PlrCardPair playerCard = (PlrCardPair) plrCard;
+		playerCard.player.playCard(playerCard.card);
+	}
+	public static void onCardDrawn(Object Player) {
+		PlrCardPair playerCard = (PlrCardPair) Player;
+		//player.cardDrawn.set();
+		//player.drawCard(true);
+		
+		//if(playerCard.card.cardType != CardType.ExplodingKitten)
+		//	playerCard.player.cardDrawn(playerCard.card);
 		playerCard.player.cardDrawn.set();
 	}
 	public static void onExplodingKittenReplaced(Object Card) {
@@ -71,8 +98,11 @@ public class GameServer {
 	}
 	public static void onTurnEnded(Object plr) {
 		Player player = (Player) plr;
-		player.turnEnded.set();
+		player.endTurn();
 	}
-	
+	public static void onCardPlayed(Object plrCardPair) {
+		PlrCardPair plrCard = (PlrCardPair) plrCardPair;
+		plrCard.player.playCard(plrCard.card.id);
+	}
 }
 // should the way the program works be different to what i say it is in the design.

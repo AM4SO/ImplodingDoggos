@@ -1,0 +1,11 @@
+package gameServer;
+
+public class UserCommunicator {
+	public UserCommunicator() {
+		
+	}
+	public void sendRawMessage(String message) { // probably useless function. 
+		/////////Just exists to decompose task of communicating with the user.
+		
+	}
+}

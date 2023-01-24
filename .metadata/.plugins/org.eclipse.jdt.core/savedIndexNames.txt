@@ -1,3 +1,2 @@
 INDEX VERSION 1.131+E:\Users\daany\source\repos\Exploding Kittens\.metadata\.plugins\org.eclipse.jdt.core
-2646299432.index
 1865797976.index

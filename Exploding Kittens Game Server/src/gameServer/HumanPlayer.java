@@ -1,9 +1,12 @@
 package gameServer;
 
-public class HumanPlayer extends Player {
+import java.net.Socket;
 
-	public HumanPlayer(GameServer s) {
-		super(s);
+public class HumanPlayer extends Player {
+	//private Socket socket;
+	public HumanPlayer(GameServer server, Socket s) {
+		super(server);
+		userCommunicator = new PlayerCommunicator(s);
 		// TODO Auto-generated constructor stub
 	}
 

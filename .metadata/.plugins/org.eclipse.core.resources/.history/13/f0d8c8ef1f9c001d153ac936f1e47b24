@@ -1,0 +1,26 @@
+package gameServer;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class ServerListener extends Thread {
+	public java.net.ServerSocket listener;
+	private int port;
+	public ServerListener(int port) {
+		this.port = port;
+	}
+	public void run() {
+		try {
+			listener = new ServerSocket(port);
+			while (true) {
+				Socket socket = listener.accept();
+				
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+}

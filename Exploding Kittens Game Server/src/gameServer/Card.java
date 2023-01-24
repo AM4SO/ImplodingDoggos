@@ -10,7 +10,10 @@ public class Card {
 	public CardAssetPack assetPack;
 	public BooleanVariable neutralised;
 	public BooleanVariable booleanGPA; // general purpose attribute
+	public int id;
+	public static int CardIdCounter = 0;
 	public Card(CardType type) {
+		id = Card.CardIdCounter++;
 		cardType = type;
 		neutralised = new BooleanVariable(false); // neutralised: Noped or diffused
 		booleanGPA = new BooleanVariable(false);
