@@ -50,7 +50,7 @@ public class Player {
 	public void endTurn() {
 		while (cardsPlaying.size() > 0) 
 		{
-			Card c = cardsPlaying.remove(0); 
+			Card c = cardsPlaying.remove(0);
 			cardsPlaying.remove(c);
 			game.disposePile.add(c);
 		}
