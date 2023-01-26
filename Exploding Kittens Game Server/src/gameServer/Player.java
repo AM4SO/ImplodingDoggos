@@ -1,12 +1,10 @@
 package gameServer;
 
-import java.net.Socket;
-import java.util.function.Consumer;
 import java.util.ArrayList;
 
 public class Player {
 	static int totalPlayers = 0, playersDead = 0, idCount = 0;
-	private static ArrayList<Player> players = new ArrayList<Player>();
+	protected static ArrayList<Player> players = new ArrayList<Player>();
 	//public BooleanVariable hasTurn;
 	public BooleanVariable turnEnded, cardDrawn;
 	private GameServer game;
@@ -14,7 +12,7 @@ public class Player {
 	public Hand cards;
 	public String name;
 	public boolean isDead;
-	public UserCommunicator userCommunicator;
+	public PlayerCommunicator userCommunicator;
 	private ArrayList<Card> cardsPlaying;
 	public int turnsLeft;
 	
@@ -25,10 +23,10 @@ public class Player {
 		return null;
 	}
 	
-	public Player(GameServer game) {
+	public Player() {
 		Player.players.add(this);
 		isDead = false;
-		this.game = game;
+		this.game = GameServer.game;
 		Player.totalPlayers++;
 		turnEnded = new BooleanVariable(false);
 		cardDrawn = new BooleanVariable(false);

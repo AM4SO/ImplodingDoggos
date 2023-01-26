@@ -31,6 +31,7 @@ class BooleanVariable{
 	boolean value;
 	public boolean defaultVal;
 	private Consumer<Void> onSet;
+	public Object arg;
 	BooleanVariable(boolean value, Consumer<Void> setFunc) {
 		this.value = value;
 		defaultVal = value;
@@ -45,7 +46,11 @@ class BooleanVariable{
 		value = !defaultVal;
 		onSet.accept(null);
 		return value;
-	}public boolean reset() {
+	}public boolean set(Object arg) {
+		this.arg = arg;
+		return set();
+	}
+	public boolean reset() {
 		value = defaultVal;
 		return value;
 	}

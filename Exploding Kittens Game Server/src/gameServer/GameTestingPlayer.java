@@ -1,8 +1,8 @@
 package gameServer;
 
 public class GameTestingPlayer extends Player {
-	public GameTestingPlayer(GameServer game) {
-		super(game);
+	public GameTestingPlayer() {
+		super();
 	}
 	@Override
 	public void startTurn() {

@@ -1,7 +1,5 @@
 package gameServer;
 
-import java.util.Random;
-
 public class Card {
 	public CardPack cardPack;
 	public DogCardType specificCardType;
