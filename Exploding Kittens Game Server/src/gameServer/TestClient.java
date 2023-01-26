@@ -30,6 +30,7 @@ public class TestClient extends Thread {
 			Request req = new Request();
 			req.userId = userId;
 			req.content = new RequestContent();
+			req.content.requestType = RequestType.JoinGame;
 			
 			outStream.writeObject(req);
 		} catch (IOException e) {

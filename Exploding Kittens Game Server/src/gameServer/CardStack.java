@@ -75,11 +75,3 @@ public class CardStack {
 		return c;
 	}
 }
-class PlrCardPair {
-	Player player;
-	Card card;
-	public PlrCardPair(Player plr, Card c) {
-		this.player = plr;
-		this.card = c;
-	}
-}

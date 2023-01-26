@@ -61,3 +61,29 @@ class BooleanVariable{
 	}
 	
 }
+class PlrCardPair {
+	Player player;
+	Card card;
+	public PlrCardPair(Player plr, Card c) {
+		this.player = plr;
+		this.card = c;
+	}
+}
+class PlayerRequestPair{
+	Player player;
+	RequestContent request;
+	public PlayerRequestPair(Player plr, RequestContent req) {
+		player = plr;
+		request = req;
+	}
+}
+class PlayCardArgs{
+	Player player;
+	Card card;
+	Object[] args;
+	public PlayCardArgs(Player plr, Card c, Object[] arg) {
+		player = plr;
+		card = c;
+		args = arg;
+	}
+}

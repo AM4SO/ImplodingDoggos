@@ -7,16 +7,18 @@ public class EventSystem {
 	public static Event cardNeutralised = new Event();
 	public static Event cardDrawn = new Event();
 	public static Event explodingKittenCardReplaced = new Event();
-	public static Event cardPlayed = new Event();
+	public static Event tryPlayCard = new Event();
 	public static Event tryDrawCard = new Event();
 	public static Event playerConnected = new Event();
+	public static Event playerRequestReceived = new Event();
 	public static void Initialise() {
 		cardNeutralised.onInvoked.add(GameServer::onCardNeutralised);
 		cardDrawn.onInvoked.add(GameServer::onCardDrawn);
 		explodingKittenCardReplaced.onInvoked.add(GameServer::onExplodingKittenReplaced);
-		cardPlayed.onInvoked.add(GameServer::onCardPlayed);
+		tryPlayCard.onInvoked.add(GameServer::onTryPlayCard);
 		tryDrawCard.onInvoked.add(GameServer::onTryDrawCard);
 		playerConnected.onInvoked.add(GameServer::onPlayerConnected);
+		playerRequestReceived.onInvoked.add(GameServer::onPlayerRequestReceived);
 	}
 	public EventSystem() {
 		
@@ -31,7 +33,7 @@ class Event{
 	public void invoke(Object arg, boolean newThread) {
 		for (Consumer<Object> r: onInvoked) {
 			if (newThread) new Thread( () -> {r.accept(arg);} ).start();
-			else new Thread( () -> {r.accept(arg);} ).run();
+			else r.accept(arg);;
 		}
 	}public void invoke(Object arg) {
 		invoke(arg, true);

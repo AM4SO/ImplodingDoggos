@@ -37,6 +37,7 @@ public class Player {
 		turnsLeft = 0;
 	}
 	public void die() {
+		turnsLeft = 0;
 		isDead = true;
 		Player.playersDead++;
 		System.out.println(name.concat(" has died'd"));
@@ -54,13 +55,13 @@ public class Player {
 			cardsPlaying.remove(c);
 			game.disposePile.add(c);
 		}
-		turnEnded.set();
-		System.out.println(name.concat("'s turn has eneded"));
+		turnsLeft--;
+		// tell client turn has ended
+		
+		if (turnsLeft <= 0) turnEnded.set();
+		System.out.println(name.concat("'s turn has ended"));
 	}public void endTurn(Void thing) {
 		endTurn();
-	}
-	public void playCard(int cardId) {
-		
 	}
 	public void drawCard() {
 		drawCard(false);
@@ -72,15 +73,13 @@ public class Player {
 		if(debug) System.out.println(name.concat(" has drawn ").concat(card.cardType.toString()));
 		// tell client what card drawn
 		if (card.cardType == CardType.ExplodingKitten) {
-			playCard(card);
-			return;
-			/// tell client exploding kitten gonna kill?
-			/// if not diffused within x seconds, die player.			
+			playCard(card);		
 		}
+		endTurn();
 		// tell user turn successfully ended
 	}
 	public void playCard(Card c) {playCard(c, null);}
-	public void playCard(Card card, Object args) {
+	public void playCard(Card card, Object[] args) {
 		// check card is in hand -- probably done by caller of this function
 		// remove card from hand
 		// depending on card type, either place in dispose pile, or place it in the 
@@ -91,9 +90,9 @@ public class Player {
 			playExplodingKitten(card);
 			break;
 		case Attack://////////////////////////////////////////// LEFT OFF HERE -------- Forgetn't to account for Nope
-			int playerId = (int) args;
-			Player plr = Player.getPlayerById(playerId);
-			game.playerGo = game.players.indexOf(plr);
+			//int playerId = (int) args[1];
+			//Player plr = Player.getPlayerById(playerId);
+			//game.playerGo = game.players.indexOf(plr);
 			endTurn();
 		default:
 			break;

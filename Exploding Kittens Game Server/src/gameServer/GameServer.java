@@ -73,15 +73,17 @@ public class GameServer {
 			//////////////// maybe cut this and instead start turn and wait until turn ended or time passed.
 			//////////////// would be cleaner and all the shit to do with the player can be handled in the player object.
 			
-			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) { 
+			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) { // cardDrawn is set true immediately after tryDrawCard is invoked
 				System.out.println(plr.name.concat(" is being forced to draw"));
 				EventSystem.tryDrawCard.invoke(plr, false); // false is to run synchronously
 			}/// By default, invoking an event runs the event handler functions asynchronously on a new thread
 			//// This meant that the program didn't block on line 78, so lines 83-84 caused the playerGo to 
 			//// no longer be the the index of the player who is being forced to draw a card. 
 			////////////////////////////
-			plr.cardDrawn.reset(); // Forgetting this led to infinitely switching 
-			plr.endTurn(); ///        between player turns without drawing cards
+			ExplodingKittensUtils.waitTimeOrTrue(Integer.MAX_VALUE, plr.turnEnded);// make sure that turn has actually ended
+			// required because if player isn't forced to draw, then their draw is handled asynchronously, meaning thread no block.
+			
+			plr.cardDrawn.reset(); // Forgetting this led to infinitely switching between player turns without drawing cards
 			playerGo = (playerGo + 1) % Player.totalPlayers;
 		}
 	}
@@ -98,8 +100,9 @@ public class GameServer {
 		card.neutralised.set();
 	}
 	public static void onTryPlayCard(Object plrCard) { // card will be found by invoker of this event (don't forget to do it u fucking idiot)
-		PlrCardPair playerCard = (PlrCardPair) plrCard;
-		playerCard.player.playCard(playerCard.card);
+		PlayCardArgs playerCard = (PlayCardArgs) plrCard;
+		if (!playerCard.player.cards.cards.contains(playerCard.card)) return;
+		playerCard.player.playCard(playerCard.card, playerCard.args);
 	}
 	public static void onCardDrawn(Object Player) {
 		PlrCardPair playerCard = (PlrCardPair) Player;
@@ -113,12 +116,29 @@ public class GameServer {
 		Player player = (Player) plr;
 		player.endTurn();
 	}
-	public static void onCardPlayed(Object plrCardPair) {
-		PlrCardPair plrCard = (PlrCardPair) plrCardPair;
-		plrCard.player.playCard(plrCard.card.id);
-	}
 	public static void onPlayerConnected(Object plr) {
 		Player player = (Player) plr;
 		game.playerJoined.set(player);
+	}
+	public static void onPlayerRequestReceived(Object plrReqPair) {
+		PlayerRequestPair plrRequest = (PlayerRequestPair) plrReqPair;
+		Player player = plrRequest.player;
+		RequestContent request = plrRequest.request;
+		
+		// Assume there is already an associated player with the sender of the request
+		// as requests without one will have been filtered out. 
+		// player has already joined the game.
+		// N.B. This subroutine is already running asynchronously to the rest of the program.
+		
+		if (request.requestType == RequestType.DrawCard) {
+			EventSystem.tryDrawCard.invokeSync(player);
+		}else if (request.requestType == RequestType.PlayCard) {
+			int cardId = (int) request.args[0];
+			Card card = Card.getCardById(cardId);
+			
+			PlayCardArgs x = new PlayCardArgs(player, card, request.args);
+			EventSystem.tryPlayCard.invokeSync(x);
+		}
+		
 	}
 }

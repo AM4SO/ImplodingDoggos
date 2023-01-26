@@ -25,6 +25,7 @@ public class ServerListener extends Thread {
 			listener = new ServerSocket(port);
 			while (GameServer.game.waitingForPlayers) {
 				Socket socket = listener.accept();
+				if (!GameServer.game.waitingForPlayers) continue;
 				System.out.println("received connection");
 				SocketManager socketManager = new SocketManager(socket);
 				socketManager.start();/////////////////////////////////////////////////////// Error to write about? Use start not run
@@ -54,46 +55,50 @@ class SocketManager extends Thread{ // Handles all traffic on a specific socket
 	}
 	@Override
 	public void run() {
-		try {
-			/// The first 4 bits of any request represent an integer which represents the length
-			/// of the request (excluding the 4 prefix bytes)
-			///byte[] prefix = new byte[4];
-			///for (int i = 0; i < 4; i++) {
-			///	prefix[i] = (byte) stream.read();
-			///}
-			///ByteBuffer x = ByteBuffer.wrap(prefix);
-			///int numBytes = x.getInt();
-			/// Now the rest of the request must be read 
-			///byte[] requestBytes = new byte[numBytes];
-			///for (int i = 0; i < numBytes; i++) {
-			///	requestBytes[i] = (byte) stream.read();
-			///}
-			/// Next convert the request to a string and parse it using the JSON parser
-			/// into a request object
-			//String requestString = String.valueOf(requestBytes);
-			//JSONObject obj = new JSONObject(requestString);
-			//Request req = Request.fromJsonObject(obj);
-			//////////////////////////////////////////////////////
-			///// Just learnt that I didn't need to use JSON and build a Request object myself    FUCK
-			///// I can cast my InputStream to an ObjectInputStream and cast the result to a Request
-			
-			// All of the above can be replaced with:   (I wasted ages trying to figure out why shitty JSON wouldn't import properly for nothing :) )
-			
-
+		while (true) {
 			try {
-				Request request = (Request) stream.readObject();
+				/// The first 4 bytes of any request represent an integer which represents the length
+				/// of the request (excluding the 4 prefix bytes)
+				///byte[] prefix = new byte[4];
+				///for (int i = 0; i < 4; i++) {
+				///	prefix[i] = (byte) stream.read();
+				///}
+				///ByteBuffer x = ByteBuffer.wrap(prefix);
+				///int numBytes = x.getInt();
+				/// Now the rest of the request must be read 
+				///byte[] requestBytes = new byte[numBytes];
+				///for (int i = 0; i < numBytes; i++) {
+				///	requestBytes[i] = (byte) stream.read();
+				///}
+				/// Next convert the request to a string and parse it using the JSON parser
+				/// into a request object
+				//String requestString = String.valueOf(requestBytes);
+				//JSONObject obj = new JSONObject(requestString);
+				//Request req = Request.fromJsonObject(obj);
+				//////////////////////////////////////////////////////
+				///// Just learnt that I didn't need to use JSON and build a Request object myself    FUCK
+				///// I can cast my InputStream to an ObjectInputStream and cast the result to a Request
+				
+				// All of the above can be replaced with:   (I wasted ages trying to figure out why shitty JSON wouldn't import properly for nothing :) )
+				
 
-				Player sender = HumanPlayer.getPlayerByUserId(request.userId);
-				if (sender==null && GameServer.game.waitingForPlayers) { // plr doesn't yet exist and game is waiting for players so add player to game
-					sender = new HumanPlayer(request.userId, new ObjectOutputStream(socket.getOutputStream()));
-					EventSystem.playerConnected.invoke(sender);
+				try {
+					Request request = (Request) stream.readObject();
+
+					Player sender = HumanPlayer.getPlayerByUserId(request.userId);
+					if (sender==null && GameServer.game.waitingForPlayers && request.content.requestType == RequestType.JoinGame) { 
+						/// plr doesn't yet exist and game is waiting for players so add player to game
+						sender = new HumanPlayer(request.userId, new ObjectOutputStream(socket.getOutputStream()));
+						EventSystem.playerConnected.invoke(sender);
+					}else if (sender == null) continue;
+					EventSystem.playerRequestReceived.invoke(new PlayerRequestPair(sender, request.content));
+				}catch (ClassNotFoundException e) {
+					e.printStackTrace();
 				}
-			}catch (ClassNotFoundException e) {
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			}	
 		}
 	}
 }

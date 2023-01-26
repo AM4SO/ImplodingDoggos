@@ -69,10 +69,21 @@ class Request implements Serializable{
 }
 class RequestContent implements Serializable{
 	private static final long serialVersionUID = 1L;
-
+	
 	public static RequestContent fromJsonObject(JSONObject o) { /// No longer needed
 		RequestContent ret = new RequestContent();
 		
 		return ret;
 	}
+	public RequestType requestType;
+	public Object[] args;
 }
+enum RequestType{
+	JoinGame,
+	PlayCard,
+	DrawCard,
+	
+}
+
+
+

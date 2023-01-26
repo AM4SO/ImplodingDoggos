@@ -1,6 +1,18 @@
 package gameServer;
 
+import java.util.ArrayList;
+
 public class Card {
+	public static int CardIdCounter = 0;
+	public static ArrayList<Card> Cards = new ArrayList<Card>();;
+	
+	public static Card getCardById(int cardId) {
+		for(Card c : Cards) {
+			if (c.id == cardId) return c;
+		}
+		return null;
+	}
+	
 	public CardPack cardPack;
 	public DogCardType specificCardType;
 	public CardType cardType;
@@ -9,12 +21,12 @@ public class Card {
 	public BooleanVariable neutralised;
 	public BooleanVariable booleanGPA; // general purpose attribute
 	public int id;
-	public static int CardIdCounter = 0;
 	public Card(CardType type) {
 		id = Card.CardIdCounter++;
 		cardType = type;
-		neutralised = new BooleanVariable(false); // neutralised: Noped or diffused
+		neutralised = new BooleanVariable(false); // neutralised: Noped or defused
 		booleanGPA = new BooleanVariable(false);
+		Card.Cards.add(this);
 	}
 	
 	public void redoRandom() {
