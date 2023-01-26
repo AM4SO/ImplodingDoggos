@@ -30,7 +30,7 @@ class Event{
 	}
 	public void invoke(Object arg) {
 		for (Consumer<Object> r: onInvoked) {
-			new Thread( () -> {r.accept(arg);} ).run();
+			new Thread( () -> {r.accept(arg);} ).start();
 		}
 	}
 }
