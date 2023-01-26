@@ -70,10 +70,10 @@ public class CardStack {
 	
 	public Card drawCard(Player plr) {
 		Card c = cards.pop();
-		EventSystem.cardDrawn.invoke(new PlrCardPair(plr, c));
+		EventSystem.cardDrawn.invokeSync(new PlrCardPair(plr, c));// same problem as previous here: should be synchronous
+		//GameServer.onCardDrawn(new PlrCardPair(plr, c));
 		return c;
 	}
-
 }
 class PlrCardPair {
 	Player player;

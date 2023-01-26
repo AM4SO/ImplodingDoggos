@@ -23,7 +23,7 @@ public class HumanPlayer extends Player {
 		userCommunicator = new HumanPlayerCommunicator(stream);
 		System.out.print("Player with userId: ");
 		System.out.print(userId);
-		System.out.print(" has joined the game");
+		System.out.println(" has joined the game");
 	}
 
 }

@@ -32,15 +32,17 @@ public class GameServer {
 	}public void init() {
 		players.add(new GameTestingPlayer());
 		players.add(new GameTestingPlayer());
-		players.add(new GameTestingPlayer());
 		
+		//// Give players time to join the game
 		boolean enoughPlayers = false;
 		while (!enoughPlayers) {
-			int waitTime = 70000;
-			if (players.size() < GameServer.minPlayers) waitTime = 30000;
-			boolean newJoined = ExplodingKittensUtils.waitTimeOrTrue(30000, playerJoined);
-			Player plr = (Player) playerJoined.arg;
-			players.add(plr);
+			int waitTime = 3000;//// If there aren't enough players to start the game, wait 30 secs for players to join
+			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
+			if(ExplodingKittensUtils.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
+				Player plr = (Player) playerJoined.arg;
+				players.add(plr);
+			}else if (players.size() >= GameServer.minPlayers) enoughPlayers = true; // break loop if no players join and we dont need more.
+			playerJoined.reset();
 		}
 		
 		waitingForPlayers = false;
@@ -70,11 +72,13 @@ public class GameServer {
 			//if (!ExplodingKittensUtils.waitTimeOrTrue(25000, plr.turnEnded))                    ------ HERE ------ 
 			//////////////// maybe cut this and instead start turn and wait until turn ended or time passed.
 			//////////////// would be cleaner and all the shit to do with the player can be handled in the player object.
+			
 			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) { 
 				System.out.println(plr.name.concat(" is being forced to draw"));
-				EventSystem.tryDrawCard.invoke(plr);
-				//plr.drawCard();
-			}
+				EventSystem.tryDrawCard.invoke(plr, false); // false is to run synchronously
+			}/// By default, invoking an event runs the event handler functions asynchronously on a new thread
+			//// This meant that the program didn't block on line 78, so lines 83-84 caused the playerGo to 
+			//// no longer be the the index of the player who is being forced to draw a card. 
 			////////////////////////////
 			plr.cardDrawn.reset(); // Forgetting this led to infinitely switching 
 			plr.endTurn(); ///        between player turns without drawing cards
@@ -84,14 +88,14 @@ public class GameServer {
 	public void awaitPlayers() {
 		
 	}
-	public static void onCardNeutralised(Object Card) {
-		Card card = (Card)Card;
-		card.neutralised.set();
-	}
 	public static void onTryDrawCard(Object player) { // called if player tells server they want to draw a card
 		if (game.players.get(game.playerGo) != (Player) player) return;// or if a player is forced to draw.
 		Player plr = (Player) player;
 		plr.drawCard(debug);
+	}
+	public static void onCardNeutralised(Object Card) {
+		Card card = (Card)Card;
+		card.neutralised.set();
 	}
 	public static void onTryPlayCard(Object plrCard) { // card will be found by invoker of this event (don't forget to do it u fucking idiot)
 		PlrCardPair playerCard = (PlrCardPair) plrCard;
@@ -99,11 +103,6 @@ public class GameServer {
 	}
 	public static void onCardDrawn(Object Player) {
 		PlrCardPair playerCard = (PlrCardPair) Player;
-		//player.cardDrawn.set();
-		//player.drawCard(true);
-		
-		//if(playerCard.card.cardType != CardType.ExplodingKitten)
-		//	playerCard.player.cardDrawn(playerCard.card);
 		playerCard.player.cardDrawn.set();
 	}
 	public static void onExplodingKittenReplaced(Object Card) {
@@ -118,9 +117,8 @@ public class GameServer {
 		PlrCardPair plrCard = (PlrCardPair) plrCardPair;
 		plrCard.player.playCard(plrCard.card.id);
 	}
-	public static void onPlayerAdded(Object plr) {
+	public static void onPlayerConnected(Object plr) {
 		Player player = (Player) plr;
 		game.playerJoined.set(player);
 	}
 }
-// should the way the program works be different to what i say it is in the design.

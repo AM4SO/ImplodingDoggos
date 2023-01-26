@@ -86,7 +86,7 @@ class SocketManager extends Thread{ // Handles all traffic on a specific socket
 				Player sender = HumanPlayer.getPlayerByUserId(request.userId);
 				if (sender==null && GameServer.game.waitingForPlayers) { // plr doesn't yet exist and game is waiting for players so add player to game
 					sender = new HumanPlayer(request.userId, new ObjectOutputStream(socket.getOutputStream()));
-					EventSystem.playerAdded.invoke(sender);
+					EventSystem.playerConnected.invoke(sender);
 				}
 			}catch (ClassNotFoundException e) {
 				e.printStackTrace();

@@ -39,10 +39,12 @@ public class Player {
 	public void die() {
 		isDead = true;
 		Player.playersDead++;
+		System.out.println(name.concat(" has died'd"));
 	}
 	public void startTurn() {
 		turnsLeft = 1; 
 		turnEnded.reset();
+		System.out.println(name.concat("'s turn..."));
 		// do some player informing stuff init.
 	}
 	public void endTurn() {
@@ -53,6 +55,7 @@ public class Player {
 			game.disposePile.add(c);
 		}
 		turnEnded.set();
+		System.out.println(name.concat("'s turn has eneded"));
 	}public void endTurn(Void thing) {
 		endTurn();
 	}
