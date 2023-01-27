@@ -31,7 +31,7 @@ public class GameServer {
 		System.out.println("Started listener");
 	}public void init() {
 		players.add(new GameTestingPlayer());
-		players.add(new GameTestingPlayer());
+		//players.add(new GameTestingPlayer());
 		
 		//// Give players time to join the game
 		boolean enoughPlayers = false;

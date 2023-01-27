@@ -6,7 +6,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="E:/Users/daany/source/repos/Exploding Kittens/Exploding Kittens Game Server/json-20220924.jar">
+	<classpathentry kind="lib" path="/home/daanyal/Documents/GitHub/ExplodingKittens/Exploding Kittens Game Server/json-20220924.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:file:/E:/Users/daany/source/repos/Exploding%20Kittens/Exploding%20Kittens%20Game%20Server/json-20220924-javadoc.jar!/"/>
 		</attributes>

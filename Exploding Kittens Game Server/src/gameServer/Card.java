@@ -8,7 +8,7 @@ public class Card {
 	
 	public static Card getCardById(int cardId) {
 		for(Card c : Cards) {
-			if (c.id == cardId) return c;
+	 		if (c.id == cardId) return c;
 		}
 		return null;
 	}
