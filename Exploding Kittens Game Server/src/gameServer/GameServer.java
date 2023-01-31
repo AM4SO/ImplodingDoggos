@@ -24,6 +24,9 @@ public class GameServer {
 		disposePile = new ArrayList<Card>();
 		players = new ArrayList<Player>();
 		
+		// below thread will only run until waitingForPlayers is false
+		//new Thread(() -> {HumanPlayer.PlayerCreationHandler();}).start();
+		
 		listener = new ServerListener(port);
 		System.out.println("Starting listener");
 		listener.start();
@@ -119,8 +122,6 @@ public class GameServer {
 	}
 	public static void onPlayerConnected(Object plr) {
 		Player player = (Player) plr;
-		//System.out.println("GameServer 122: ".concat(String.valueOf(GameServer.game.playerJoined.value)));
-		//ExplodingKittensUtils.waitForFalse(GameServer.game.playerJoined);
 		assert(player != null);
 		game.playerJoined.set(player);
 	}

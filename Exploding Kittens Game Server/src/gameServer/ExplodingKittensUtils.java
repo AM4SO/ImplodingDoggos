@@ -97,7 +97,8 @@ class MultiSetterBooleanVariable extends BooleanVariable{ // In some cases, a bo
 	@Override
 	public boolean set(Object arg) {
 		if (value == defaultVal) {
-			return super.set(arg);
+			this.arg = arg;
+			return super.set();
 		}// if already set
 		setterQueue.add(arg);
 		return false;
