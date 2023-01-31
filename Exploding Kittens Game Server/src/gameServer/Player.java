@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Player {
 	static int totalPlayers = 0, playersDead = 0, idCount = 0;
 	protected static ArrayList<Player> players = new ArrayList<Player>();
+	static protected MultiSetterBooleanVariable PlrCreating;
 	//public BooleanVariable hasTurn;
 	public BooleanVariable turnEnded, cardDrawn;
 	private GameServer game;

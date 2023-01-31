@@ -15,11 +15,11 @@ public class GameServer {
 	public int playerGo = 0;
 	public ArrayList<Card> disposePile;
 	public boolean waitingForPlayers = true;
-	public BooleanVariable playerJoined;
+	public MultiSetterBooleanVariable playerJoined;
 	ServerListener listener;
 	public GameServer(int port) {
 		GameServer.game = this;
-		playerJoined = new BooleanVariable(false);
+		playerJoined = new MultiSetterBooleanVariable(false);
 		EventSystem.Initialise();
 		disposePile = new ArrayList<Card>();
 		players = new ArrayList<Player>();
@@ -36,10 +36,11 @@ public class GameServer {
 		//// Give players time to join the game
 		boolean enoughPlayers = false;
 		while (!enoughPlayers) {
-			int waitTime = 3000;//// If there aren't enough players to start the game, wait 30 secs for players to join
+			int waitTime = 6000;//// If there aren't enough players to start the game, wait 30 secs for players to join
 			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
 			if(ExplodingKittensUtils.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
 				Player plr = (Player) playerJoined.arg;
+				System.out.println(plr.name.concat(": is being added to the list of players"));
 				players.add(plr);
 			}else if (players.size() >= GameServer.minPlayers) enoughPlayers = true; // break loop if no players join and we dont need more.
 			playerJoined.reset();
@@ -73,7 +74,7 @@ public class GameServer {
 			//////////////// maybe cut this and instead start turn and wait until turn ended or time passed.
 			//////////////// would be cleaner and all the shit to do with the player can be handled in the player object.
 			
-			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, plr.cardDrawn)) { // cardDrawn is set true immediately after tryDrawCard is invoked
+			if (!ExplodingKittensUtils.waitTimeOrTrue(15000, plr.cardDrawn)) { // cardDrawn is set true immediately after tryDrawCard is invoked
 				System.out.println(plr.name.concat(" is being forced to draw"));
 				EventSystem.tryDrawCard.invoke(plr, false); // false is to run synchronously
 			}/// By default, invoking an event runs the event handler functions asynchronously on a new thread
@@ -118,6 +119,9 @@ public class GameServer {
 	}
 	public static void onPlayerConnected(Object plr) {
 		Player player = (Player) plr;
+		//System.out.println("GameServer 122: ".concat(String.valueOf(GameServer.game.playerJoined.value)));
+		//ExplodingKittensUtils.waitForFalse(GameServer.game.playerJoined);
+		assert(player != null);
 		game.playerJoined.set(player);
 	}
 	public static void onPlayerRequestReceived(Object plrReqPair) {
@@ -133,6 +137,7 @@ public class GameServer {
 		if (request.requestType == RequestType.DrawCard) {
 			EventSystem.tryDrawCard.invokeSync(player);
 		}else if (request.requestType == RequestType.PlayCard) {
+			if (request.args == null || request.args.length == 0) return;
 			int cardId = (int) request.args[0];
 			Card card = Card.getCardById(cardId);
 			

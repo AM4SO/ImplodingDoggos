@@ -34,9 +34,14 @@ public class TestClient extends Thread {
 			connector = new Socket(Inet4Address.getByName("localhost"), port);
 			outStream = new ObjectOutputStream(connector.getOutputStream());
 			outStream.flush();
+			Request r = new Request();
+			r.userId = userId;
+			r.content = new RequestContent();
+			r.content.requestType = RequestType.JoinGame;
+			outStream.writeObject(r);
 			while (true) {
 				try {
-					System.out.println("Enter request type: ");
+					//System.out.println("Enter request type: ");
 					String reqType = reader.readLine();
 					Request req = new Request();
 					req.userId = userId;
@@ -46,7 +51,7 @@ public class TestClient extends Thread {
 					outStream.writeObject(req);
 				}catch(IllegalArgumentException e) {
 					System.out.println("Bad request");
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 			}
 		} catch (IOException e) {

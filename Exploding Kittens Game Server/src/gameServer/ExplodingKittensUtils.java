@@ -1,5 +1,6 @@
 package gameServer;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 public class ExplodingKittensUtils {
@@ -7,9 +8,16 @@ public class ExplodingKittensUtils {
 			boolean setOnEnd) {
 		long start = System.nanoTime();
 		milliseconds *= 1000000;
-		while (System.nanoTime() - start < milliseconds && 
+		long now = System.nanoTime();
+		while (now - start < milliseconds && 
 				(boolVar.value==boolVar.defaultVal)) {
-			continue;
+			now = System.nanoTime();
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		boolean ret = boolVar.value != boolVar.defaultVal;
 		if (setOnEnd) boolVar.set();
@@ -25,14 +33,26 @@ public class ExplodingKittensUtils {
 			e.printStackTrace();
 		}
 	}
+	public static boolean waitForFalse(BooleanVariable playerJoined) {
+		// TODO Auto-generated method stub
+		while (playerJoined.value != playerJoined.defaultVal) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
 }
 
 class BooleanVariable{
-	boolean value;
+	protected boolean value;
 	public boolean defaultVal;
-	private Consumer<Void> onSet;
-	public Object arg;
-	BooleanVariable(boolean value, Consumer<Void> setFunc) {
+	protected Consumer<Object> onSet;
+	protected Object arg;
+	BooleanVariable(boolean value, Consumer<Object> setFunc) {
 		this.value = value;
 		defaultVal = value;
 		onSet = setFunc;
@@ -44,7 +64,7 @@ class BooleanVariable{
 	}
 	public boolean set() {
 		value = !defaultVal;
-		onSet.accept(null);
+		onSet.accept(this.arg);
 		return value;
 	}public boolean set(Object arg) {
 		this.arg = arg;
@@ -56,10 +76,48 @@ class BooleanVariable{
 	}
 	public boolean get() {
 		return value;
-	}public boolean get(Void thing) {
+	}public boolean get(Object thing) {
 		return value;
 	}
 	
+}
+class MultiSetterBooleanVariable extends BooleanVariable{ // In some cases, a boolean variable can be set by many 
+	private ConcurrentLinkedQueue<Object> setterQueue;///            different places in the program by different threads. 
+	///////                  								 It is possible that it can be set twice at the same time
+	//              										 causing one of the sets to be lost.
+	/// In some cases, this won't matter, but sometimes, each 'set' must be recognised.
+	/// This class utilises a thread-safe queue to store each additional set that occurs while the variable is already set.
+	public MultiSetterBooleanVariable(boolean init, Consumer<Object> setFunc) {
+		super(init, setFunc);
+		setterQueue = new ConcurrentLinkedQueue<Object>();
+	}public MultiSetterBooleanVariable(boolean init) {
+		super(init);
+		setterQueue = new ConcurrentLinkedQueue<Object>();
+	}
+	@Override
+	public boolean set(Object arg) {
+		if (value == defaultVal) {
+			return super.set(arg);
+		}// if already set
+		setterQueue.add(arg);
+		return false;
+	}
+	@Override
+	public boolean set() {
+		if (value == defaultVal) {
+			return super.set();
+		}// if already set, add it to queue
+		return set(null);
+	}
+	@Override
+	public boolean reset() {
+		if (setterQueue.peek() != null) { // if queue not empty, use next arg, don't reset this.value;
+			this.arg = setterQueue.poll();
+			this.value = !defaultVal;
+			return value;
+		}
+		return super.reset();
+	}
 }
 class PlrCardPair {
 	Player player;
