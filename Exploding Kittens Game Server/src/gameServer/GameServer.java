@@ -7,7 +7,6 @@ public class GameServer {
 	static final boolean debug = true;
 	static final int minPlayers = 2;
 	
-	public java.util.concurrent.Executor thread;
 	static GameServer game;
 	public static Random random = new Random();
 	public ArrayList<Player> players;
@@ -43,7 +42,7 @@ public class GameServer {
 			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
 			if(ExplodingKittensUtils.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
 				Player plr = (Player) playerJoined.arg;
-				System.out.println(plr.name.concat(": is being added to the list of players"));
+				System.out.println(plr.name.concat(" is being added to the list of players"));
 				players.add(plr);
 			}else if (players.size() >= GameServer.minPlayers) enoughPlayers = true; // break loop if no players join and we dont need more.
 			playerJoined.reset();
