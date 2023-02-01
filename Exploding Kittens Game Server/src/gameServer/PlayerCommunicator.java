@@ -7,8 +7,6 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
-import org.json.JSONObject;
-
 public class PlayerCommunicator extends Thread {
 	public PlayerCommunicator() {
 		
@@ -57,24 +55,10 @@ class Request implements Serializable{
 	public long sessionToken;// This program will never use this. -- Ignored
 	public RequestContent content; // main part of request - includes game shit. 
 	
-	public static Request fromJsonObject(JSONObject o) { /// waste of my time grrr
-		Request ret = new Request();
-		ret.gameId = o.optInt("gameId");
-		ret.userId = o.getLong("userId");
-		ret.sessionToken = o.optLong("sessionToken");
-		ret.content = RequestContent.fromJsonObject(o.getJSONObject("content"));
-		
-		return ret;
-	}
 }
 class RequestContent implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
-	public static RequestContent fromJsonObject(JSONObject o) { /// No longer needed
-		RequestContent ret = new RequestContent();
-		
-		return ret;
-	}
+
 	public RequestType requestType;
 	public Object[] args;
 }
