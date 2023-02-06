@@ -1,5 +1,6 @@
 package gameServer;
 
+import java.io.Serializable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
@@ -145,4 +146,16 @@ class PlayCardArgs{
 		card = c;
 		args = arg;
 	}
+}
+class ClientMessage implements Serializable{
+	private static final long serialVersionUID = 1L;
+	int playerId;
+	ClientMessageContent cont;
+}
+class ClientMessageContent implements Serializable{
+	private static final long serialVersionUID = 1L;
+	ClientMessageType messageType;
+}
+enum ClientMessageType{
+	TurnStarted
 }

@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import org.json.*;
 
 public class ServerListener extends Thread {
 	public java.net.ServerSocket listener;
@@ -46,7 +45,9 @@ class SocketManager extends Thread{ // Handles all traffic on a specific socket
 	private Socket socket;
 	public SocketManager(Socket sock) {
 		try {
+			System.out.println("socket getting input stream");
 			this.stream = new ObjectInputStream(sock.getInputStream());
+			System.out.println("socket got input stream");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

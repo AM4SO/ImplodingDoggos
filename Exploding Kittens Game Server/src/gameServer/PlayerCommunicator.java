@@ -16,7 +16,7 @@ public class PlayerCommunicator extends Thread {
 	}public void sendRawMessage(String data) throws IOException {
 		byte[] bytes = data.getBytes();
 		sendRawMessage(bytes);
-	}public void sendRequestMessage(Request req) {
+	}public void sendRequestMessage(ClientMessage message) {
 		
 	}
 }
@@ -27,13 +27,19 @@ class HumanPlayerCommunicator extends PlayerCommunicator{
 	public HumanPlayerCommunicator(ObjectOutputStream stream) {
 		super();
 		sendStream = stream;
+		try {
+			sendStream.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public void sendRawMessage(byte[] data) throws IOException {
 		sendStream.write(data);
 	}
 	@Override
-	public void sendRequestMessage(Request req) {
+	public void sendRequestMessage(ClientMessage req) {
 		try {
 			sendStream.writeObject(req);
 		} catch (IOException e) {

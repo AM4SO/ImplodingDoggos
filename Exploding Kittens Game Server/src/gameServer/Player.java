@@ -26,6 +26,7 @@ public class Player {
 	
 	public Player() {
 		Player.players.add(this);
+		userCommunicator = new PlayerCommunicator();
 		isDead = false;
 		this.game = GameServer.game;
 		Player.totalPlayers++;
@@ -48,6 +49,11 @@ public class Player {
 		turnEnded.reset();
 		System.out.println(name.concat("'s turn..."));
 		// do some player informing stuff init.
+		ClientMessage message = new ClientMessage();
+		message.playerId = playerId;
+		message.cont = new ClientMessageContent();
+		message.cont.messageType = ClientMessageType.TurnStarted;
+		userCommunicator.sendRequestMessage(message);// Reminder: Make async
 	}
 	public void endTurn() {
 		while (cardsPlaying.size() > 0) 
