@@ -2,6 +2,7 @@ package gameServer;
 /// userId matters
 /// sessionToken and gameId don't
 
+import java.awt.TrayIcon.MessageType;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +40,10 @@ public class TestClient extends Thread {
 			r.content = new RequestContent();
 			r.content.requestType = RequestType.JoinGame;
 			outStream.writeObject(r);
+			
+			inStream = new ObjectInputStream(connector.getInputStream());// blocks off until outputStream flushed on other end
+			new Thread(this::messageHandler).start();
+			
 			while (true) {
 				try {
 					//System.out.println("Enter request type: ");
@@ -56,6 +61,30 @@ public class TestClient extends Thread {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	private void messageHandler() {
+		while (true) {
+			try {
+				ClientMessage message = (ClientMessage) inStream.readObject();
+				//////////////////////////////////////////////////////////// Reminder: make better debug log system for less repetitive code
+				if (message.cont.messageType == ClientMessageType.TurnStarted) {
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Request r = new Request();
+					r.content = new RequestContent();
+					r.userId = userId;
+					r.content.requestType = RequestType.DrawCard;
+					outStream.writeObject(r);
+				}
+			} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
