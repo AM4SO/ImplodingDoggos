@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/design_default_color_error"
+    android:theme="@style/ThemeOverlay.ImplodingDoggos.FullscreenContainer"
+    tools:context=".HomeScreen">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+    <TextView
+        android:id="@+id/fullscreen_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:keepScreenOn="true"
+        android:textColor="?attr/fullscreenTextColor"
+        android:textSize="50sp"
+        android:textStyle="bold"/>
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btn_playLocal2"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="185dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="464dp"
+            android:layout_marginTop="28dp"
+            android:backgroundTintMode="add"
+            android:fontFamily="casual"
+            android:text="Play Local"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_playOnline2" />
+
+        <Button
+            android:id="@+id/btn_customise2"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="185dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="464dp"
+            android:layout_marginTop="32dp"
+            android:backgroundTintMode="add"
+            android:fontFamily="casual"
+            android:text="Customise"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_playLocal2" />
+
+        <Button
+            android:id="@+id/btn_playOnline2"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="185dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="464dp"
+            android:layout_marginTop="112dp"
+            android:backgroundTintMode="add"
+            android:fontFamily="casual"
+            android:text="Play Online"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_signIn2"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="125dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="148dp"
+            android:layout_marginTop="344dp"
+            android:fontFamily="casual"
+            android:text="@string/action_signIn"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/btn_settings2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="44dp"
+            android:background="@null"
+            android:contentDescription="SettingsButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@android:drawable/ic_menu_manage" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="345dp"
+            android:layout_height="186dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt_plrName2"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="361dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="220dp"
+            android:text="Guest14849372904"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="@style/Widget.Theme.ImplodingDoggos.ButtonBar.Fullscreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" />
+
+    </FrameLayout>
+
+</FrameLayout>

@@ -43,7 +43,7 @@ public class TestClient extends Thread {
 			
 			inStream = new ObjectInputStream(connector.getInputStream());// blocks off until outputStream flushed on other end
 			new Thread(this::messageHandler).start();
-			
+			/*
 			while (true) {
 				try {
 					//System.out.println("Enter request type: ");
@@ -58,7 +58,7 @@ public class TestClient extends Thread {
 					System.out.println("Bad request");
 					//e.printStackTrace();
 				}
-			}
+			}*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

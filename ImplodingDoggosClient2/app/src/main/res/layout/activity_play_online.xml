@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".playOnline"
+    android:background="@color/design_default_color_error">
+
+    <Button
+        android:id="@+id/btn_matchmake4"
+        android:layout_width="130dp"
+        android:layout_height="60dp"
+        android:layout_marginBottom="8dp"
+        android:text="Matchmake"
+        app:layout_constraintBottom_toBottomOf="@+id/radioGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="227dp"
+        android:layout_height="173dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.141"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_message"
+        app:layout_constraintVertical_bias="0.16000003">
+
+        <TextView
+            android:id="@+id/txt_expansionPacks"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:text="Expansion Packs"
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/check_explodingDoggos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Exploding Doggos"
+            app:checkedState="unchecked" />
+
+        <CheckBox
+            android:id="@+id/check_streakingDoggos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Streaking Doggos"
+            app:checkedState="unchecked" />
+
+        <CheckBox
+            android:id="@+id/check_meowingDoggos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Meowing Doggos"
+            app:checkedState="unchecked" />
+
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/lbl_matchmakeFeedback"
+        android:layout_width="225dp"
+        android:layout_height="67dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/radioGroup"
+        app:layout_constraintStart_toStartOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:textAllCaps="false" />
+
+    <TextView
+        android:id="@+id/lbl_watingRoomChat"
+        android:layout_width="374dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="16dp"
+        android:text="Chat"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.567"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_sendMessage"
+        android:layout_width="75dp"
+        android:layout_height="49dp"
+        android:text="send"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_message"
+        app:layout_constraintEnd_toEndOf="@+id/scroll_chatHistory"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/txt_message"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_chatHistory"
+        app:layout_constraintVertical_bias="0.888" />
+
+    <ScrollView
+        android:id="@+id/scroll_chatHistory"
+        android:layout_width="371dp"
+        android:layout_height="419dp"
+        android:layout_marginTop="0dp"
+        android:background="#4B9C9494"
+        android:elevation="2dp"
+        app:layout_constraintEnd_toEndOf="@+id/lbl_watingRoomChat"
+        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintStart_toStartOf="@+id/lbl_watingRoomChat"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_watingRoomChat">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
+
+    <EditText
+        android:id="@+id/txt_message"
+        android:layout_width="298dp"
+        android:layout_height="42dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="@+id/scroll_chatHistory"
+        app:layout_constraintTop_toBottomOf="@+id/scroll_chatHistory" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
