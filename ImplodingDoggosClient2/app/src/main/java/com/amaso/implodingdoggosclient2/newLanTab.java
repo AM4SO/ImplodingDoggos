@@ -1,5 +1,6 @@
 package com.amaso.implodingdoggosclient2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -35,6 +36,7 @@ public class newLanTab extends Fragment {
                 new Thread(() -> {
                     Main.main(null);
                 }).start();
+                startActivity(new Intent(this.getContext(),Game.class));
             });
         }
     }

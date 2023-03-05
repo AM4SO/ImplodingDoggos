@@ -8,14 +8,21 @@
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout-land/activity_login_page.xml" value="0.2543822146216332" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout-land/activity_main.xml" value="0.2001338688085676" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout-land/activity_play_online.xml" value="0.22" />
-        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout-land/fragment_new_lan_tab.xml" value="0.3478835978835979" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout-land/fragment_new_lan_tab.xml" value="0.22" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_customise_page.xml" value="0.2565789473684211" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_customise_page2.xml" value="0.2565789473684211" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_game.xml" value="0.2565789473684211" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_local_play_setup.xml" value="0.19671052631578947" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_login_page.xml" value="0.2076388888888889" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_play_local_setup.xml" value="0.22" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/activity_play_online.xml" value="0.2556648140230868" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/content_customise_page.xml" value="0.2565789473684211" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/content_game.xml" value="0.2565789473684211" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/fragment_chat.xml" value="0.2565789473684211" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/fragment_local_play_setup.xml" value="0.25953947368421054" />
         <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/fragment_new_lan_tab.xml" value="0.2506578947368421" />
+        <entry key="..\:/Users/daany/source/repos/ExplodingKittens/ImplodingDoggosClient2/app/src/main/res/layout/text_chat_item.xml" value="0.24769736842105264" />
       </map>
     </option>
   </component>

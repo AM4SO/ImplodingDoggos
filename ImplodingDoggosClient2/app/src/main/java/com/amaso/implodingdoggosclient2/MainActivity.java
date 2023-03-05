@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_playOnline).setOnClickListener(view -> startActivity(new Intent(view.getContext(), playOnline.class)));
         findViewById(R.id.btn_signIn).setOnClickListener(view -> startActivity(new Intent(view.getContext(), loginPage.class)));
         findViewById(R.id.btn_playLocal).setOnClickListener(view -> startActivity(new Intent(view.getContext(), playLocalSetup.class)));
+        findViewById(R.id.btn_customise).setOnClickListener(view -> startActivity(new Intent(view.getContext(), CustomisePage.class)));
     }
     @Override
     public void onWindowFocusChanged(boolean hasFocus)

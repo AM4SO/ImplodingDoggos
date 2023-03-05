@@ -14,7 +14,7 @@ import android.widget.Switch;
 import com.amaso.implodingdoggosclient2.ui.main.SectionsPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-
+//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
 public class playLocalSetup extends AppCompatActivity {
     final int flags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION

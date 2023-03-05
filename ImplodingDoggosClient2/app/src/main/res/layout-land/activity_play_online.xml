@@ -56,22 +56,14 @@
         app:layout_constraintStart_toStartOf="@+id/radioGroup"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
-    <ScrollView
-        android:id="@+id/scroll_chatHistory"
-        android:layout_width="615dp"
-        android:layout_height="282dp"
-        android:background="#4B9C9494"
-        android:elevation="2dp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="com.amaso.implodingdoggosclient2.Chat"
+        android:layout_width="614dp"
+        android:layout_height="322dp"
         app:layout_constraintEnd_toEndOf="@+id/lbl_watingRoomChat"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/lbl_watingRoomChat"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_watingRoomChat">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/lbl_watingRoomChat" />
 
     <TextView
         android:id="@+id/lbl_watingRoomChat"
@@ -84,27 +76,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/txt_message"
-        android:layout_width="540dp"
-        android:layout_height="41dp"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Message"
-        app:layout_constraintStart_toStartOf="@+id/scroll_chatHistory"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_chatHistory" />
-
-    <Button
-        android:id="@+id/btn_sendMessage"
-        android:layout_width="75dp"
-        android:layout_height="40dp"
-        android:text="send"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/scroll_chatHistory"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/txt_message"
-        app:layout_constraintTop_toBottomOf="@+id/scroll_chatHistory" />
-
     <TextView
         android:id="@+id/lbl_matchmakeFeedback"
         android:layout_width="176dp"
@@ -116,4 +87,6 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_matchmake"
         app:layout_constraintVertical_bias="0.0"
         app:textAllCaps="false" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
