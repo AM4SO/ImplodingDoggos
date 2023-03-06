@@ -37,7 +37,8 @@ public class GameServer {
 		
 		//// Give players time to join the game
 		boolean enoughPlayers = false;
-		while (!enoughPlayers) {
+		while (!enoughPlayers) { // Pause thread, tell other thread to awake this thread in x time, and tell otherer thread to
+			///                     Tell this thread when plr joined. -- Thread.Notify();
 			int waitTime = 6000;//// If there aren't enough players to start the game, wait 30 secs for players to join
 			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
 			if(ExplodingKittensUtils.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
