@@ -13,6 +13,9 @@ import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.Socket;
 
+import gameServer.ImplodingDoggosUtils.ClientMessage;
+import gameServer.ImplodingDoggosUtils.ClientMessageType;
+
 public class TestClient extends Thread {
 	long userId;
 	Socket connector;

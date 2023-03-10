@@ -2,6 +2,13 @@ package gameServer;
 
 import java.util.ArrayList;
 
+import gameServer.ImplodingDoggosUtils.BooleanVariable;
+import gameServer.ImplodingDoggosUtils.ClientMessage;
+import gameServer.ImplodingDoggosUtils.ClientMessageContent;
+import gameServer.ImplodingDoggosUtils.ClientMessageType;
+import gameServer.ImplodingDoggosUtils.Functions;
+import gameServer.ImplodingDoggosUtils.MultiSetterBooleanVariable;
+
 public class Player {
 	static int totalPlayers = 0, playersDead = 0, idCount = 0;
 	protected static ArrayList<Player> players = new ArrayList<Player>();
@@ -108,7 +115,7 @@ public class Player {
 		cardsPlaying.add(card);
 	}
 	public void playExplodingKitten(Card card) {
-		if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.neutralised, false)) {
+		if (!Functions.waitTimeOrTrue(5000, card.neutralised, false)) {
 			System.out.println(name.concat(" has failed to defuse the exploding kitten and has died'd"));
 			card.neutralised.reset();
 			die();
@@ -116,7 +123,7 @@ public class Player {
 			// Tell client/player
 			// Another wait for them to take an action, i.e. place exploding kitten in deck.
 			// if no action after x seconds, place wherever
-			if (!ExplodingKittensUtils.waitTimeOrTrue(5000, card.booleanGPA, false))
+			if (!Functions.waitTimeOrTrue(5000, card.booleanGPA, false))
 				game.drawPile.cards.push(card);
 			System.out.println(name.concat(" has placed the exploding kitten on the top of the deck"));
 			card.booleanGPA.reset();

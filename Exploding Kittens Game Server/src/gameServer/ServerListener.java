@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import gameServer.ImplodingDoggosUtils.PlayerRequestPair;
+
 public class ServerListener extends Thread {
 	public java.net.ServerSocket listener;
 	private int port;
@@ -84,7 +86,7 @@ class SocketManager extends Thread{ // Handles all traffic on a specific socket
 				
 
 				try {
-					Request request = (Request) stream.readObject();
+					Request request = (Request) stream.readObject();       //// This is what the above was replaced with.
 
 					Player sender = HumanPlayer.getPlayerByUserId(request.userId);
 					if (sender==null && GameServer.game.waitingForPlayers && request.content.requestType == RequestType.JoinGame) { 

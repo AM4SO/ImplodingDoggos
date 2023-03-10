@@ -7,6 +7,8 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.Socket;
 
+import gameServer.ImplodingDoggosUtils.ClientMessage;
+
 public class PlayerCommunicator extends Thread {
 	public PlayerCommunicator() {
 		
@@ -50,30 +52,6 @@ class HumanPlayerCommunicator extends PlayerCommunicator{
 
 
 
-
-
-
-class Request implements Serializable{
-	private static final long serialVersionUID = 1L;
-	
-	public int gameId; // This program will never use this. -- Ignored
-	public long userId; // Used to differentiate between players when one connection is used for multiple players. 
-	public long sessionToken;// This program will never use this. -- Ignored
-	public RequestContent content; // main part of request - includes game shit. 
-	
-}
-class RequestContent implements Serializable{
-	private static final long serialVersionUID = 1L;
-
-	public RequestType requestType;
-	public Object[] args;
-}
-enum RequestType{
-	JoinGame,
-	PlayCard,
-	DrawCard,
-	
-}
 
 
 

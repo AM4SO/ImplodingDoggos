@@ -3,6 +3,12 @@ package gameServer;
 import java.util.ArrayList;
 import java.util.Random;
 
+import gameServer.ImplodingDoggosUtils.Functions;
+import gameServer.ImplodingDoggosUtils.MultiSetterBooleanVariable;
+import gameServer.ImplodingDoggosUtils.PlayCardArgs;
+import gameServer.ImplodingDoggosUtils.PlayerRequestPair;
+import gameServer.ImplodingDoggosUtils.PlrCardPair;
+
 public class GameServer {
 	static final boolean debug = true;
 	static final int minPlayers = 2;
@@ -41,7 +47,7 @@ public class GameServer {
 			///                     Tell this thread when plr joined. -- Thread.Notify();
 			int waitTime = 6000;//// If there aren't enough players to start the game, wait 30 secs for players to join
 			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
-			if(ExplodingKittensUtils.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
+			if(Functions.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
 				Player plr = (Player) playerJoined.arg;
 				System.out.println(plr.name.concat(" is being added to the list of players"));
 				players.add(plr);
@@ -77,14 +83,14 @@ public class GameServer {
 			//////////////// maybe cut this and instead start turn and wait until turn ended or time passed.
 			//////////////// would be cleaner and all the shit to do with the player can be handled in the player object.
 			
-			if (!ExplodingKittensUtils.waitTimeOrTrue(15000, plr.cardDrawn)) { // cardDrawn is set true immediately after tryDrawCard is invoked
+			if (!Functions.waitTimeOrTrue(15000, plr.cardDrawn)) { // cardDrawn is set true immediately after tryDrawCard is invoked
 				System.out.println(plr.name.concat(" is being forced to draw"));
 				EventSystem.tryDrawCard.invoke(plr, false); // false is to run synchronously
 			}/// By default, invoking an event runs the event handler functions asynchronously on a new thread
 			//// This meant that the program didn't block on line 78, so lines 83-84 caused the playerGo to 
 			//// no longer be the the index of the player who is being forced to draw a card. 
 			////////////////////////////
-			ExplodingKittensUtils.waitTimeOrTrue(Integer.MAX_VALUE, plr.turnEnded);// make sure that turn has actually ended
+			Functions.waitTimeOrTrue(Integer.MAX_VALUE, plr.turnEnded);// make sure that turn has actually ended
 			// required because if player isn't forced to draw, then their draw is handled asynchronously, meaning thread no block.
 			
 			plr.cardDrawn.reset(); // Forgetting this led to infinitely switching between player turns without drawing cards

@@ -2,6 +2,8 @@ package gameServer;
 
 import java.util.ArrayList;
 
+import gameServer.ImplodingDoggosUtils.BooleanVariable;
+
 public class Card {
 	public static int CardIdCounter = 0;
 	public static ArrayList<Card> Cards = new ArrayList<Card>();;

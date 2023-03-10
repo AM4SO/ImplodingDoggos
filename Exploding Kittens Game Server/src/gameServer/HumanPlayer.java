@@ -3,6 +3,9 @@ package gameServer;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import gameServer.ImplodingDoggosUtils.Functions;
+import gameServer.ImplodingDoggosUtils.MultiSetterBooleanVariable;
+
 public class HumanPlayer extends Player {
 	static protected MultiSetterBooleanVariable PlrCreating = new MultiSetterBooleanVariable(false);
 	static protected boolean lock = false;
@@ -30,7 +33,7 @@ public class HumanPlayer extends Player {
 	}
 	public static void PlayerCreationHandler() { ///  Should run on own thread after
 		while (GameServer.game.waitingForPlayers) {// setting waitingForPlayers to true
-			if (ExplodingKittensUtils.waitTimeOrTrue(3_000, PlrCreating)) {
+			if (Functions.waitTimeOrTrue(3_000, PlrCreating)) {
 				UIDOutputStreamPair args = (UIDOutputStreamPair) PlrCreating.arg;
 				assert args!=null && PlrCreating != null;
 				new HumanPlayer(args.UID, args.stream);

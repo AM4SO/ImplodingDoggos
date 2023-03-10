@@ -2,6 +2,8 @@ package gameServer;
 
 import java.util.Stack;
 
+import gameServer.ImplodingDoggosUtils.PlrCardPair;
+
 public class CardStack {
 	Stack<Card> cards;
 	public int numPlayers;
