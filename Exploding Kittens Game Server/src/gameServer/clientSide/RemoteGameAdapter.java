@@ -7,23 +7,11 @@ import java.net.Inet4Address;
 import java.net.Socket;
 import java.util.Random;
 
-import org.json.JSONObject;
-
 import gameServer.Request;
 import gameServer.ImplodingDoggosUtils.ClientMessage;
 import gameServer.ImplodingDoggosUtils.ClientMessageContent;
 
 
-interface RemoteGameMessageAdapter{
-	public void onTurnStarted(int playerId);
-	public void onCardPlayed(int cardId, int playerId);
-	public void onGameStateReceived();
-	public void onPlayerJoined(int playerId);
-	public void onPlayerDied(int playerId);
-	public void onCardDrawn(int cardId);
-	public void onCheatGameStateReceived();
-	public void onMessageFromPeers(JSONObject message);
-}
 ///////////////////////////////////////////////////////////////////////// REMINDER: SWITCH TO THREADPOOLS for reuse of threads.
 public class RemoteGameAdapter{
 	static Random Random = new Random();

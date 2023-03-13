@@ -3,6 +3,11 @@ package gameServer;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.json.JSONObject;
+
+import gameServer.ImplodingDoggosUtils.ClientMessage;
+import gameServer.ImplodingDoggosUtils.ClientMessageContent;
+import gameServer.ImplodingDoggosUtils.ClientMessageType;
 import gameServer.ImplodingDoggosUtils.Functions;
 import gameServer.ImplodingDoggosUtils.MultiSetterBooleanVariable;
 import gameServer.ImplodingDoggosUtils.PlayCardArgs;
@@ -22,6 +27,18 @@ public class GameServer {
 	public boolean waitingForPlayers = true;
 	public MultiSetterBooleanVariable playerJoined;
 	ServerListener listener;
+	
+	public GameState getGameState(Player player) {
+		GameState gameState = new GameState();
+		gameState.cards = Card.Cards;
+		gameState.localPlayerHand = player.cards;
+		gameState.playerTurn = playerGo;
+		gameState.players = new ArrayList<PlayerState>();
+		for (Player plr : players) gameState.players.add(plr.getPlayerState(false));
+		
+		return null;
+	}
+	
 	public GameServer(int port) {
 		GameServer.game = this;
 		playerJoined = new MultiSetterBooleanVariable(false);
@@ -153,4 +170,99 @@ public class GameServer {
 		}
 		
 	}
+
+	public static void startNewThread(Runnable runnable) { // To ease the future switching towards Threadpools
+		new Thread(runnable).start();
+	}
+}
+
+/// Switching to an interface and a class which implements the interface, for handling requests 
+/// from clients improves modularity and maintainability of the code, reduces unnecessary branching
+/// between files, and reduces the need to have a lot of events.
+interface RequestProcessor{
+	GameServer game = null;
+	public default void onPlayerRequestReceived(Object plrReqPair) {
+		PlayerRequestPair plrRequest = (PlayerRequestPair) plrReqPair;
+		Player player = plrRequest.player;
+		RequestContent request = plrRequest.request;
+		int argsSupplied = 0;
+		if (request.args != null) argsSupplied = request.args.length;
+		
+		// Assume there is already an associated player with the sender of the request
+		// as requests without one will have been filtered out. 
+		// player has already joined the game.
+		// N.B. This subroutine is already running asynchronously to the rest of the program.
+		
+		switch (request.requestType) {
+		case DrawCard:
+			onRequestDrawCard(player);
+			break;
+		case PlayCard:
+			Card card = Card.getCardById((int) request.args[0]);
+			onRequestPlayCard(new PlayCardArgs(player, card, request.args));
+		case JoinGame: // Already handled, no need for more work
+			break;
+		case MessagePeers:
+			if (argsSupplied != 1) return;
+			onRequestMessagePeers((HumanPlayer) player, (JSONObject) request.args[0]);
+			break;
+		case RequestCheatGameState:
+			onRequestCheatGameState(player);
+			break;
+		case RequestGameState:
+			onRequestGameState(player);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void onRequestDrawCard(Player player);
+	public void onRequestPlayCard(PlayCardArgs plrCard);
+	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON);
+	public void onRequestCheatGameState(Player player);
+	public void onRequestGameState(Player player);
+}
+
+
+class RequestHandler implements RequestProcessor{
+
+	@Override
+	public void onRequestDrawCard(Player player) {
+		if (game.players.get(game.playerGo) != (Player) player) return;
+		Player plr = (Player) player;
+		plr.drawCard(GameServer.debug);
+	}
+
+	@Override
+	public void onRequestPlayCard(PlayCardArgs plrCard) {
+		PlayCardArgs playerCard = (PlayCardArgs) plrCard;
+		if (!playerCard.player.cards.cards.contains(playerCard.card)) return;
+		playerCard.player.playCard(playerCard.card, playerCard.args);
+	}
+
+	@Override
+	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON) {
+		ClientMessage message = ClientMessage.MessageFromPeers(player, messageJSON);
+		for(Player peer : game.players) {
+			if (!HumanPlayer.class.isInstance(peer)) continue;
+			message.playerId = peer.playerId;
+			peer.userCommunicator.sendRequestMessageAsync(message);
+		}
+	}
+
+	@Override
+	public void onRequestCheatGameState(Player player) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onRequestGameState(Player player) {
+		GameState state = game.getGameState(player);
+		ClientMessage message = ClientMessage.FullGameState(player, state);
+		
+		player.userCommunicator.sendRequestMessage(message);
+	}
+	
 }

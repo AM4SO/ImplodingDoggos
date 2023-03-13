@@ -21,6 +21,9 @@ public class PlayerCommunicator extends Thread {
 	}public void sendRequestMessage(ClientMessage message) {
 		
 	}
+	public void sendRequestMessageAsync(ClientMessage message) {
+		GameServer.startNewThread(() -> sendRequestMessage(message));
+	}
 }
 
 class HumanPlayerCommunicator extends PlayerCommunicator{
