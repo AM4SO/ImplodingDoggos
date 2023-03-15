@@ -26,6 +26,7 @@ public class GameServer {
 	public ArrayList<Card> disposePile;
 	public boolean waitingForPlayers = true;
 	public MultiSetterBooleanVariable playerJoined;
+	public RequestProcessor requestHandler;
 	ServerListener listener;
 	
 	public GameState getGameState(Player player) {
@@ -41,6 +42,7 @@ public class GameServer {
 	
 	public GameServer(int port) {
 		GameServer.game = this;
+		requestHandler = new RequestHandler(this);
 		playerJoined = new MultiSetterBooleanVariable(false);
 		EventSystem.Initialise();
 		disposePile = new ArrayList<Card>();
@@ -180,7 +182,6 @@ public class GameServer {
 /// from clients improves modularity and maintainability of the code, reduces unnecessary branching
 /// between files, and reduces the need to have a lot of events.
 interface RequestProcessor{
-	GameServer game = null;
 	public default void onPlayerRequestReceived(Object plrReqPair) {
 		PlayerRequestPair plrRequest = (PlayerRequestPair) plrReqPair;
 		Player player = plrRequest.player;
@@ -192,28 +193,20 @@ interface RequestProcessor{
 		// as requests without one will have been filtered out. 
 		// player has already joined the game.
 		// N.B. This subroutine is already running asynchronously to the rest of the program.
-		
-		switch (request.requestType) {
-		case DrawCard:
+		RequestType reqType = request.requestType;
+		if (reqType == RequestType.DrawCard) {
+			if (player == null) System.out.println("NULL PLAYER");
 			onRequestDrawCard(player);
-			break;
-		case PlayCard:
+		}else if (reqType == RequestType.PlayCard) {
 			Card card = Card.getCardById((int) request.args[0]);
 			onRequestPlayCard(new PlayCardArgs(player, card, request.args));
-		case JoinGame: // Already handled, no need for more work
-			break;
-		case MessagePeers:
+		}else if (reqType == RequestType.MessagePeers) {
 			if (argsSupplied != 1) return;
 			onRequestMessagePeers((HumanPlayer) player, (JSONObject) request.args[0]);
-			break;
-		case RequestCheatGameState:
+		}else if (reqType == RequestType.RequestCheatGameState) {
 			onRequestCheatGameState(player);
-			break;
-		case RequestGameState:
+		}else if (reqType == RequestType.RequestGameState) {
 			onRequestGameState(player);
-			break;
-		default:
-			break;
 		}
 	}
 	
@@ -226,10 +219,14 @@ interface RequestProcessor{
 
 
 class RequestHandler implements RequestProcessor{
-
+	private GameServer game;
+	public RequestHandler(GameServer game) {
+		this.game = game;
+	}
+	
 	@Override
 	public void onRequestDrawCard(Player player) {
-		if (game.players.get(game.playerGo) != (Player) player) return;
+		if (game.players.get(game.playerGo) != player) return;
 		Player plr = (Player) player;
 		plr.drawCard(GameServer.debug);
 	}

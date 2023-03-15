@@ -18,7 +18,8 @@ public class EventSystem {
 		tryPlayCard.onInvoked.add(GameServer::onTryPlayCard);
 		tryDrawCard.onInvoked.add(GameServer::onTryDrawCard);
 		playerConnected.onInvoked.add(GameServer::onPlayerConnected);
-		playerRequestReceived.onInvoked.add(GameServer::onPlayerRequestReceived);
+		//playerRequestReceived.onInvoked.add(GameServer::onPlayerRequestReceived);
+		playerRequestReceived.onInvoked.add((obj) -> {GameServer.game.requestHandler.onPlayerRequestReceived(obj);});
 	}
 	public EventSystem() {
 		
