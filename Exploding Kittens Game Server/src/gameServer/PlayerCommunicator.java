@@ -10,27 +10,30 @@ import java.net.Socket;
 import gameServer.ImplodingDoggosUtils.ClientMessage;
 
 public class PlayerCommunicator extends Thread {
-	public PlayerCommunicator() {
-		
+	int playerId;
+	public PlayerCommunicator(Player parent) {
+		playerId = parent.playerId;
 	}
 	public void sendRawMessage(byte[] data) throws IOException { // probably useless function. 
 		/////////Just exists to decompose task of communicating with the user.
 	}public void sendRawMessage(String data) throws IOException {
 		byte[] bytes = data.getBytes();
 		sendRawMessage(bytes);
-	}public void sendRequestMessage(ClientMessage message) {
-		
+	}public synchronized void sendRequestMessage(ClientMessage message) {
+		message.playerId = playerId;
+		System.out.println("Sending message of type: ".concat(message.cont.messageType.name())); // Errors come too fast to read this in console
 	}
-	public void sendRequestMessageAsync(ClientMessage message) {
-		GameServer.startNewThread(() -> sendRequestMessage(message));
+	public Thread sendRequestMessageAsync(ClientMessage message) { // PlayerCommunicator.java
+		Thread t = GameServer.startNewThread(() -> sendRequestMessage(message));
+		return t; // change to return thread so caller can join thread
 	}
 }
 
 class HumanPlayerCommunicator extends PlayerCommunicator{
 	private Socket socket;
 	private ObjectOutputStream sendStream;
-	public HumanPlayerCommunicator(ObjectOutputStream stream) {
-		super();
+	public HumanPlayerCommunicator(Player parent, ObjectOutputStream stream) {
+		super(parent);
 		sendStream = stream;
 		try {
 			sendStream.flush();
@@ -44,7 +47,15 @@ class HumanPlayerCommunicator extends PlayerCommunicator{
 		sendStream.write(data);
 	}
 	@Override
-	public void sendRequestMessage(ClientMessage req) {
+	public synchronized void sendRequestMessage(ClientMessage req) { // PlayerCommunicator.Java
+		/// Came to the realisation that since some messages are sent as responses to requests from clients, 
+		/// and clients messages can be received at the same time, my previous solution to stop multiple messages being
+		/// sent at the same time was incomplete. A simpler solution is to just make this function synchronised, so that 
+		/// callers will have to take turns in running this function. 
+		/// However, my previous solution is still necessary to be used along side this, so that the thread does block off
+		/// until all players have received the message, so more messages aren't sent to some players before others have received,
+		/// a previous one.
+		super.sendRequestMessage(req);
 		try {
 			sendStream.writeObject(req);
 		} catch (IOException e) {

@@ -49,7 +49,7 @@ public class Player {
 	
 	public Player() {
 		Player.players.add(this);
-		userCommunicator = new PlayerCommunicator();
+		userCommunicator = new PlayerCommunicator(this);
 		isDead = false;
 		this.game = GameServer.game;
 		Player.totalPlayers++;
@@ -67,18 +67,16 @@ public class Player {
 		isDead = true;
 		Player.playersDead++;
 		System.out.println(name.concat(" has died'd"));
+		EventSystem.playerDied.invokeSync(this);
 	}
 	
 	public void startTurn() {
 		turnsLeft = 1; 
 		turnEnded.reset();
-		System.out.println(name.concat("'s turn..."));
 		// do some player informing stuff init.
-		ClientMessage message = new ClientMessage();
-		message.playerId = playerId;
-		message.cont = new ClientMessageContent();
-		message.cont.messageType = ClientMessageType.TurnStarted;
+		ClientMessage message = ClientMessage.TurnStarted();
 		userCommunicator.sendRequestMessage(message);// Reminder: Make async
+		System.out.println(name.concat("'s turn..."));
 	}
 	
 	public void endTurn() {
@@ -90,6 +88,8 @@ public class Player {
 		}
 		turnsLeft--;
 		// tell client turn has ended
+		ClientMessage message = ClientMessage.TurnEnded();
+		userCommunicator.sendRequestMessage(message);
 		
 		if (turnsLeft <= 0) turnEnded.set();
 		System.out.println(name.concat("'s turn has ended"));
@@ -108,12 +108,10 @@ public class Player {
 		boolean addCard = true;
 		if (addCard) cards.addCard(card);
 		if(debug) System.out.println(name.concat(" has drawn ").concat(card.cardType.toString()));
-		// tell client what card drawn
 		if (card.cardType == CardType.ExplodingKitten) {
 			playCard(card);		
 		}
 		endTurn();
-		// tell user turn successfully ended
 	}
 	
 	public void playCard(Card c) {playCard(c, null);}

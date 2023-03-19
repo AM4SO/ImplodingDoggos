@@ -26,7 +26,7 @@ public class HumanPlayer extends Player {
 	public HumanPlayer(long userId, ObjectOutputStream stream) {
 		super();
 		this.userId = userId;
-		userCommunicator = new HumanPlayerCommunicator(stream);
+		userCommunicator = new HumanPlayerCommunicator(this,stream);
 		System.out.print("Player with userId: ");
 		System.out.print(userId);
 		System.out.println(" has joined the game");

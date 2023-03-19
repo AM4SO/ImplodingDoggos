@@ -12,20 +12,43 @@ public class ClientMessage implements Serializable{
 	public int playerId;
 	public ClientMessageContent cont;
 	
-	public static ClientMessage FullGameState(Player plr, GameState state) {
+	public static ClientMessage FullGameState(GameState state) {
 		ClientMessage ret = new ClientMessage();
-		ret.playerId = plr.playerId;
 		ret.cont = new ClientMessageContent(ClientMessageType.FullGameState);
 		ret.cont.args = new Object[] {state};
 		
 		return ret;
 	}
-	public static ClientMessage MessageFromPeers(Player plr, JSONObject message) {
+	public static ClientMessage MessageFromPeers(JSONObject message) {
 		ClientMessage ret = new ClientMessage();
-		ret.playerId = plr.playerId;
 		ret.cont = new ClientMessageContent(ClientMessageType.MessageFromPeers);
 		ret.cont.args = new Object[] {message};
 		
 		return ret;
+	}
+	public static ClientMessage PlayerDied(int playerDied) {
+		ClientMessage ret = new ClientMessage();
+		ret.cont = new ClientMessageContent(ClientMessageType.PlayerDied);
+		ret.cont.args = new Object[] {playerDied};
+		return ret;
+	}
+	public static ClientMessage TurnStarted() {
+		ClientMessage message = new ClientMessage();
+		message.cont = new ClientMessageContent();
+		message.cont.messageType = ClientMessageType.TurnStarted;
+		return message;
+	}
+	public static ClientMessage TurnEnded() {
+		ClientMessage message = new ClientMessage();
+		message.cont = new ClientMessageContent();
+		message.cont.messageType = ClientMessageType.TurnEnded;
+		return message;
+	}
+	public static ClientMessage CardDrawn(int player, int cardId) {
+		ClientMessage message = new ClientMessage();
+		message.cont = new ClientMessageContent();
+		message.cont.messageType = ClientMessageType.CardDrawn;
+		message.cont.args = new Object[] {player, cardId};
+		return message;
 	}
 }

@@ -119,6 +119,12 @@ public class GameServer {
 	public void awaitPlayers() {
 		
 	}
+	public static void onPlayerDied(Object player) {
+		Player plr = (Player) player;
+		int plrId = plr.playerId;
+		ClientMessage message = ClientMessage.PlayerDied(plrId);	
+		sendToPlayers(GameServer.game.players, message);
+	}
 	public static void onTryDrawCard(Object player) { // called if player tells server they want to draw a card
 		if (game.players.get(game.playerGo) != (Player) player) return;// or if a player is forced to draw.
 		Player plr = (Player) player;
@@ -133,9 +139,42 @@ public class GameServer {
 		if (!playerCard.player.cards.cards.contains(playerCard.card)) return;
 		playerCard.player.playCard(playerCard.card, playerCard.args);
 	}
-	public static void onCardDrawn(Object Player) {
+	public static void onCardDrawn(Object Player) { // tell players card drawn
 		PlrCardPair playerCard = (PlrCardPair) Player;
 		playerCard.player.cardDrawn.set();
+		ArrayList<ClientMessage> messages = new ArrayList<ClientMessage>();
+		for (Player p : GameServer.game.players) {
+			int cardId = -1;
+			if (p.playerId == playerCard.player.playerId) cardId = playerCard.card.id;
+			messages.add(ClientMessage.CardDrawn(playerCard.player.playerId, cardId));
+		}
+		sendToPlayers(GameServer.game.players, messages);
+	}
+	public static void sendToPlayers(ArrayList<Player> plrs, ClientMessage msg) {
+		// to allow multiple plrs to be sent the same message
+		
+		ArrayList<ClientMessage> msgs = new ArrayList<ClientMessage>();
+		for (int i = 0; i < plrs.size(); i++) {
+			msgs.add(msg);
+		}
+		sendToPlayers(plrs, msgs);
+	}
+	public static void sendToPlayers(ArrayList<Player> plrs, ArrayList<ClientMessage> msgs) {
+		/// Function to reduce repetitiveness of code when needing to send a group of players a message
+		ArrayList<Thread> threads = new ArrayList<Thread>();
+		for (int i = 0; i < plrs.size(); i++) {
+			Player p = plrs.get(i);
+			ClientMessage msg = msgs.get(i);
+			threads.add(p.userCommunicator.sendRequestMessageAsync(msg));
+		}
+		for (Thread t : threads) {
+			try {
+				t.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	public static void onExplodingKittenReplaced(Object Card) {
 		Card card = (Card)Card;
@@ -173,8 +212,10 @@ public class GameServer {
 		
 	}
 
-	public static void startNewThread(Runnable runnable) { // To ease the future switching towards Threadpools
-		new Thread(runnable).start();
+	public static Thread startNewThread(Runnable runnable) { // To ease the future switching towards Threadpools
+		Thread t = new Thread(runnable);
+		t.start();
+		return t;/// Change to return the thread so it can be joined
 	}
 }
 
@@ -240,7 +281,7 @@ class RequestHandler implements RequestProcessor{
 
 	@Override
 	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON) {
-		ClientMessage message = ClientMessage.MessageFromPeers(player, messageJSON);
+		ClientMessage message = ClientMessage.MessageFromPeers(messageJSON);
 		for(Player peer : game.players) {
 			if (!HumanPlayer.class.isInstance(peer)) continue;
 			message.playerId = peer.playerId;
@@ -257,7 +298,7 @@ class RequestHandler implements RequestProcessor{
 	@Override
 	public void onRequestGameState(Player player) {
 		GameState state = game.getGameState(player);
-		ClientMessage message = ClientMessage.FullGameState(player, state);
+		ClientMessage message = ClientMessage.FullGameState(state);
 		
 		player.userCommunicator.sendRequestMessage(message);
 	}

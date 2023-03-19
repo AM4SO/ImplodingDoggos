@@ -66,8 +66,14 @@ public class TestClient extends Thread {
 			e.printStackTrace();
 		}
 	}
-	private void messageHandler() {
+	private void messageHandler() { // TestClient.Java
 		while (true) {
+			/*try {
+				Thread.sleep(300);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}*/
 			try {
 				ClientMessage message = (ClientMessage) inStream.readObject();
 				//////////////////////////////////////////////////////////// Reminder: make better debug log system for less repetitive code

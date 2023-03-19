@@ -2,11 +2,12 @@ package gameServer.ImplodingDoggosUtils;
 
 public enum ClientMessageType{
 	TurnStarted, // playerId
+	TurnEnded, // playerId
 	CardPlayed, // cardId, playerId
 	FullGameState, // GameState
 	PlayerDied, // playerId
 	PlayerJoined, // playerId
-	CardDrawn, // cardId
+	CardDrawn, // playerId (drawer), cardId
 	MessageFromPeers, // PeerMessage(type, fromId, etc) -- This message may be received immediately after playerJoined.  ****A****
 	CheatGameState, // A game state including information which only a cheater should be able to access. Used by AI players. 
 }
