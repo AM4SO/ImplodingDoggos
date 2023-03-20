@@ -282,11 +282,7 @@ class RequestHandler implements RequestProcessor{
 	@Override
 	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON) {
 		ClientMessage message = ClientMessage.MessageFromPeers(messageJSON);
-		for(Player peer : game.players) {
-			if (!HumanPlayer.class.isInstance(peer)) continue;
-			message.playerId = peer.playerId;
-			peer.userCommunicator.sendRequestMessageAsync(message);
-		}
+		GameServer.sendToPlayers(game.players, message);
 	}
 
 	@Override

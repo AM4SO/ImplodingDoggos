@@ -4,8 +4,8 @@ public class Main {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int port = 25565;
-		boolean DEBUGGING = true;
+		int port = 25566;
+		/*boolean DEBUGGING = true;
 		if (args != null && args.length > 0) {
 			port = Integer.decode(args[0]);
 			if (args.length >= 2) {
@@ -32,6 +32,16 @@ public class Main {
 		}
 		//x.init();
 		//x.startServer();//start doing shit init.
+		 * */
+		 GameMaker gameMaker = new GameMaker(port,"testing",0,2,5,"");
+		 
+		 try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		gameMaker.end();
 	}
 
 }
