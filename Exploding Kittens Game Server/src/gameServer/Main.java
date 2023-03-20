@@ -33,6 +33,7 @@ public class Main {
 		//x.init();
 		//x.startServer();//start doing shit init.
 		 * */
+		/*
 		 GameMaker gameMaker = new GameMaker(port,"testing",0,2,5,"");
 		 
 		 try {
@@ -41,7 +42,7 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		gameMaker.end();
+		gameMaker.end();*/
 	}
 
 }

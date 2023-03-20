@@ -26,8 +26,9 @@ public class GameMaker {
 
 class LanDiscoveryServer{/// packet size = 1024
 	static final String MulticastGroupIP = "234.163.014.111";
-	static final int MulticastGroupPort = 25565;
+	static final int MulticastGroupPort = 25365;
 	
+	SocketAddress multicastAddress;
 	boolean fromClient;
 	String joinPassword;
 	String ipAddress;
@@ -39,36 +40,39 @@ class LanDiscoveryServer{/// packet size = 1024
 	MulticastSocket socket;
 	PacketCreator packetHandler;
 	GameServer game;
+	boolean discoveryServerClosed;
 	public LanDiscoveryServer(int port, String gameName, int expansionPack, int numberOfBots, int maxPlayers, String joinPassword, GameServer game) {
 		this.game = game;
 		this.port = port;
-		this.gameName = gameName;
+		this.gameName = gameName.trim();
 		this.expansionPack = expansionPack;
 		this.numberOfBots = numberOfBots;
 		this.maxPlayers = maxPlayers; 
 		this.joinPassword = joinPassword;
+		discoveryServerClosed = false;
 		try {
-			socket = new MulticastSocket(LanDiscoveryServer.MulticastGroupPort);
-			InetSocketAddress address = new InetSocketAddress(InetAddress.getByName(LanDiscoveryServer.MulticastGroupIP),
-					this.port);
-			socket.joinGroup(address, NetworkInterface.getByIndex(0));
+			multicastAddress = new InetSocketAddress(InetAddress.getByName(LanDiscoveryServer.MulticastGroupIP),
+					MulticastGroupPort);
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			socket = new MulticastSocket(MulticastGroupPort);
+			socket.joinGroup(InetAddress.getByName(LanDiscoveryServer.MulticastGroupIP));
 			packetHandler = new PacketCreator(this);
-			
-			System.out.println("converting to bytes: \n".concat(packetHandler.toString()));
-			byte[] test = new byte[1024];
-			DatagramPacket createdPacket = packetHandler.createResponse(new DatagramPacket(test,1024));
-			PacketCreator x = PacketCreator.fromPacket(createdPacket);
-			System.out.println("Back to object: \n".concat(x.toString()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	public void stop() {
+		discoveryServerClosed = true;
 		socket.close();
 	}
 	public void start() {
 		try {
 			while (true) {
+				System.out.println("Discovery server:   awaiting request...");
 				byte[] buff = new byte[1024];
 				DatagramPacket packet = new DatagramPacket(buff,1024);
 				socket.receive(packet);
@@ -79,9 +83,11 @@ class LanDiscoveryServer{/// packet size = 1024
 				packet.setAddress(senderIP);
 				packet.setPort(senderPort);
 				socket.send(packet);
+				System.out.println("Discovery server:   received request and sent response!");
 			}
 		}catch(IOException e) {
-			e.printStackTrace();
+			if(!discoveryServerClosed)
+				e.printStackTrace();
 		}
 	}
 }
@@ -93,7 +99,7 @@ class PacketCreator{
 	int expansionPack;
 	int numberOfBots;
 	int maxPlayers;
-	char[] gameName;
+	private char[] gameName;
 	GameServer game;
 	LanDiscoveryServer discoveryServer;
 	int numPlayersInGame;
@@ -116,7 +122,9 @@ class PacketCreator{
 		this.game = discoveryServer.game;
 	}
 	public PacketCreator() {};
-	
+	public String getGameName() { // solution: use a getter which converts it
+		return String.valueOf(gameName).trim();// to a string and trims it.
+	}
 	// Format for packets:
 	// sending back to client
 	/* {
@@ -182,6 +190,7 @@ class PacketCreator{
 			for (int i = 11; i < data.length; i++) {
 				ret.gameName[i-11] = (char) data[i];
 			}
+			
 		}
 		return ret;
 	}
@@ -199,7 +208,7 @@ class PacketCreator{
 		ret += "port: ".concat(String.valueOf(port)).concat("\n");
 		ret += "maxPlayers: ".concat(String.valueOf(this.maxPlayers)).concat("\n");
 		ret += "numPlayersInGame: ".concat(String.valueOf(this.numPlayersInGame)).concat("\n");
-		ret += "GameName: ".concat(String.valueOf(gameName));
+		ret += "GameName: ".concat(getGameName());
 		return ret += "\n";
 	}
 }
