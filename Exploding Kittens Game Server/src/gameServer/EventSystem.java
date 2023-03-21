@@ -12,6 +12,8 @@ public class EventSystem {
 	public static Event playerConnected = new Event();
 	public static Event playerRequestReceived = new Event();
 	public static Event playerDied = new Event();
+	public static Event turnStarted = new Event();
+	public static Event turnEnded = new Event();
 	public static void Initialise() {
 		cardNeutralised.onInvoked.add(GameServer::onCardNeutralised);
 		cardDrawn.onInvoked.add(GameServer::onCardDrawn);
@@ -22,6 +24,8 @@ public class EventSystem {
 		//playerRequestReceived.onInvoked.add(GameServer::onPlayerRequestReceived);
 		playerRequestReceived.onInvoked.add((obj) -> {GameServer.game.requestHandler.onPlayerRequestReceived(obj);});
 		playerDied.onInvoked.add(GameServer::onPlayerDied);
+		turnStarted.onInvoked.add(GameServer::onTurnStarted);
+		
 	}
 	public EventSystem() {
 		

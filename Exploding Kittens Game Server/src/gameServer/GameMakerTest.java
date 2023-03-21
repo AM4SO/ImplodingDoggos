@@ -26,7 +26,6 @@ class GameMakerTest {
 	@Test
 	void test() {
 		GameMaker gameMaker = new GameMaker(port,"testing",0,2,5,"");
-		GameMaker gameMaker2 = new GameMaker(port+1,"testing2",0,2,5,"");
 		/// gameserver instance has been created and is listening for others clients to join.
 		
 		try {

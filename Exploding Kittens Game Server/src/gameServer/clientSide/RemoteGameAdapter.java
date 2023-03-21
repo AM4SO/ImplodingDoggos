@@ -30,25 +30,18 @@ public class RemoteGameAdapter{
 	
 	
 	private IOResult readRequests() {
-		try {
-			ClientMessage request = (ClientMessage) inStream.readObject();
-			ClientMessageContent cont = request.cont;
-			switch (cont.messageType) {
-			case TurnStarted:
-				messageHandler.onTurnStarted((int)cont.args[0]);
-				break;
-			case CardPlayed:
-				messageHandler.onCardPlayed((int)cont.args[0], (int) cont.args[1]);
-			default:
-				break;
+		while (true) {
+			try {
+				ClientMessage request = (ClientMessage) inStream.readObject();
+				ClientMessageContent cont = request.cont;
+				messageHandler.onMessageReceived(cont);
+				
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+				if (e.getClass() == IOException.class)
+					return new IOResult((IOException)e);
 			}
-			
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			if (e.getClass() == IOException.class)
-				return new IOResult((IOException)e);
 		}
-		return IOResult.Success;
 	}
 	
 	public void playCard(int cardId) {

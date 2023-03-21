@@ -180,10 +180,6 @@ public class GameServer {
 		Card card = (Card)Card;
 		card.booleanGPA.set();
 	}
-	public static void onTurnEnded(Object plr) {
-		Player player = (Player) plr;
-		player.endTurn();
-	}
 	public static void onPlayerConnected(Object plr) {
 		Player player = (Player) plr;
 		assert(player != null);
@@ -210,6 +206,14 @@ public class GameServer {
 			EventSystem.tryPlayCard.invokeSync(x);
 		}
 		
+	}
+	public static void onTurnStarted(Object player) {
+		ClientMessage message = ClientMessage.TurnStarted(((Player)player).playerId);
+		sendToPlayers(GameServer.game.players,message);
+	}
+	public static void onTurnEnded(Object player) {
+		ClientMessage message = ClientMessage.TurnEnded(((Player)player).playerId);
+		sendToPlayers(GameServer.game.players,message);
 	}
 
 	public static Thread startNewThread(Runnable runnable) { // To ease the future switching towards Threadpools

@@ -74,9 +74,8 @@ public class Player {
 		turnsLeft = 1; 
 		turnEnded.reset();
 		// do some player informing stuff init.
-		ClientMessage message = ClientMessage.TurnStarted();
-		userCommunicator.sendRequestMessage(message);// Reminder: Make async
 		System.out.println(name.concat("'s turn..."));
+		EventSystem.turnStarted.invoke(this);
 	}
 	
 	public void endTurn() {
@@ -88,11 +87,10 @@ public class Player {
 		}
 		turnsLeft--;
 		// tell client turn has ended
-		ClientMessage message = ClientMessage.TurnEnded();
-		userCommunicator.sendRequestMessage(message);
 		
 		if (turnsLeft <= 0) turnEnded.set();
 		System.out.println(name.concat("'s turn has ended"));
+		EventSystem.turnEnded.invoke(this);
 	}
 	
 	public void endTurn(Void thing) {
