@@ -22,7 +22,7 @@ public class ClientMessage implements Serializable{
 	public static ClientMessage MessageFromPeers(JSONObject message) {
 		ClientMessage ret = new ClientMessage();
 		ret.cont = new ClientMessageContent(ClientMessageType.MessageFromPeers);
-		ret.cont.args = new Object[] {message};
+		ret.cont.args = new Object[] {message.toString()};
 		
 		return ret;
 	}

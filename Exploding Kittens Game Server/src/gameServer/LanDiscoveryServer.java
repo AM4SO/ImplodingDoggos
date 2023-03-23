@@ -56,7 +56,6 @@ public class LanDiscoveryServer{/// packet size = 1024
 	public void start() {
 		try {
 			while (true) {
-				System.out.println("Discovery server:   awaiting request...");
 				byte[] buff = new byte[1024];
 				DatagramPacket packet = new DatagramPacket(buff,1024);
 				socket.receive(packet);
@@ -67,7 +66,6 @@ public class LanDiscoveryServer{/// packet size = 1024
 				packet.setAddress(senderIP);
 				packet.setPort(senderPort);
 				socket.send(packet);
-				System.out.println("Discovery server:   received request and sent response!");
 			}
 		}catch(IOException e) {
 			if(!discoveryServerClosed)

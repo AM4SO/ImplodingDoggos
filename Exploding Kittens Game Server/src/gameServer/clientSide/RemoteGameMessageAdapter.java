@@ -18,8 +18,9 @@ public interface RemoteGameMessageAdapter{/// TODO: CONVERT ALL THINGYS TO JSON 
 			onCheatGameStateReceived((CheatGameState)messageCont.args[0]);
 		}else if (messageType == ClientMessageType.FullGameState) {
 			onGameStateReceived((GameState)messageCont.args[0]);
+			//onGameStateReceived(messageCont.gameState);
 		}else if (messageType == ClientMessageType.MessageFromPeers) {
-			onMessageFromPeers((JSONObject)messageCont.args[0]);
+			onMessageFromPeers((String)messageCont.args[0]);
 		}else if (messageType == ClientMessageType.PlayerDied) {
 			onPlayerDied((int)messageCont.args[0]);
 		}else if (messageType == ClientMessageType.PlayerJoined) {
@@ -38,6 +39,6 @@ public interface RemoteGameMessageAdapter{/// TODO: CONVERT ALL THINGYS TO JSON 
 	public void onPlayerDied(int playerId);
 	public void onCardDrawn(int cardId);
 	public void onCheatGameStateReceived(CheatGameState cheatGameState);
-	public void onMessageFromPeers(JSONObject message);
+	public void onMessageFromPeers(String message);
 	public void onTurnEnded(int playerId);
 }

@@ -54,7 +54,6 @@ class GameMakerTest {
 			//System.out.println("Servers found: ");
 			int i = 0;
 			ArrayList<PacketCreator> responses = testClient.lanScanner.responses;
-			System.out.println(responses.size());
 			for(PacketCreator server : responses) {
 				System.out.println(String.valueOf(i) + ": " + server.getGameName());
 			}
@@ -126,8 +125,17 @@ class GameMakerTest {
 		
 		@Override
 		public void onTurnStarted(int playerId) {
-			if (getPlayerByPlayerId(playerId).userId == parent.getUser().userId)
+			
+			if (getPlayerByPlayerId(playerId).userId == parent.getUser().userId) {
+				System.out.println("Your turn. Press enter to draw a card: ");
+				try {
+					System.in.read();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				parent.drawCard();
+			}
 		}
 
 		@Override
@@ -168,13 +176,12 @@ class GameMakerTest {
 		}
 
 		@Override
-		public void onMessageFromPeers(JSONObject message) {
+		public void onTurnEnded(int playerId) {
 			// TODO Auto-generated method stub
 			
 		}
-
 		@Override
-		public void onTurnEnded(int playerId) {
+		public void onMessageFromPeers(String message) {
 			// TODO Auto-generated method stub
 			
 		}

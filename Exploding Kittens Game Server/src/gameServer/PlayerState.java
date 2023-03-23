@@ -1,6 +1,12 @@
 package gameServer;
 
-public class PlayerState {
+import java.io.Serializable;
+
+public class PlayerState implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	int playerId;
 	int numCards;
 	String name;
@@ -8,6 +14,7 @@ public class PlayerState {
 	int turnsLeft;
 	long userId;
 }
-class CheatPlayerState extends PlayerState{
+class CheatPlayerState extends PlayerState implements Serializable{
+	private static final long serialVersionUID = 1L;
 	Hand cards;
 }

@@ -32,13 +32,13 @@ public class GameServer {
 	
 	public GameState getGameState(Player player) {
 		GameState gameState = new GameState();
-		gameState.cards = Card.Cards;
-		gameState.localPlayerHand = player.cards;
+		gameState.cards = Card.getAllCardStates();
+		gameState.localPlayerHand = player.cards.getHandState();
 		gameState.playerTurn = playerGo;
 		gameState.players = new ArrayList<PlayerState>();
 		for (Player plr : players) gameState.players.add(plr.getPlayerState(false));
 		
-		return null;
+		return gameState;
 	}
 	
 	public GameServer(int port) {

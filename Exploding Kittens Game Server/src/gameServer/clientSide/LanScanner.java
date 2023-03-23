@@ -52,10 +52,6 @@ public class LanScanner{
 			e.printStackTrace();
 		}
 		PacketCreator response = PacketCreator.fromPacket(packet);
-		//System.out.println("Lan scanner:                   Received response:");
-		//System.out.println(response.toString());
-		System.out.println("dgfffghgfhgf");
 		responses.add(response);
-		System.out.println("RESPONSES: ".concat(String.valueOf(this.responses.size())));
 	}
 }

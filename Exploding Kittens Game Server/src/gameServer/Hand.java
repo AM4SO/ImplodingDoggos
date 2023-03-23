@@ -1,8 +1,10 @@
 package gameServer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Hand {
+public class Hand implements Serializable{
+	private static final long serialVersionUID = 1L;
 	public ArrayList<Card> cards;
 	public Hand() {
 		cards = new ArrayList<Card>();
@@ -17,4 +19,13 @@ public class Hand {
 	public void removeCard(Card card) {
 		cards.remove(cards.indexOf(card));
 	}
+	public HandState getHandState() {
+		HandState ret = new HandState();
+		ret.cards = Card.getAllCardStates(cards);
+		return ret;
+	}
+}
+class HandState implements Serializable{
+	private static final long serialVersionUID = 1L;
+	public ArrayList<CardState> cards;
 }

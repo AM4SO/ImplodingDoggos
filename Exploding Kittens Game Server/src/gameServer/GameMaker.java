@@ -113,10 +113,10 @@ class TestingBot extends Bot{
 		public void onCheatGameStateReceived(CheatGameState cheatGameState) {}
 
 		@Override
-		public void onMessageFromPeers(JSONObject message) {}
+		public void onTurnEnded(int playerId) {}
 
 		@Override
-		public void onTurnEnded(int playerId) {}
+		public void onMessageFromPeers(String message) {}
 		
 	}
 }
