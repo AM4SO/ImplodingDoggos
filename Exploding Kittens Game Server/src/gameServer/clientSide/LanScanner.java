@@ -14,11 +14,9 @@ public class LanScanner{
 	private static final int MulticastGroupPort = LanDiscoveryServer.MulticastGroupPort;
 
 	DatagramSocket discovererSocket;
-	boolean receiving;
 	public ArrayList<PacketCreator> responses;
 	
 	public LanScanner() {
-		receiving = false;
 		try {
 			discovererSocket = new DatagramSocket();
 		} catch (IOException e) {
@@ -37,28 +35,27 @@ public class LanScanner{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		receiving = true;
 		Thread t = new Thread(() -> {receiveResponses();});
 		t.start();
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {}
-		receiving = false;
+		t.interrupt();
 	}
 	public void receiveResponses() {
-		responses = new ArrayList<PacketCreator>();
-		while (receiving) {
-			byte[] buff = new byte[1024];
-			DatagramPacket packet = new DatagramPacket(buff, 1024);
-			try {
-				discovererSocket.receive(packet);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			PacketCreator response = PacketCreator.fromPacket(packet);
-			//System.out.println("Lan scanner:                   Received response:");
-			//System.out.println(response.toString());
-			responses.add(response);
+		this.responses = new ArrayList<PacketCreator>();
+		byte[] buff = new byte[1024];
+		DatagramPacket packet = new DatagramPacket(buff, 1024);
+		try {
+			discovererSocket.receive(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		PacketCreator response = PacketCreator.fromPacket(packet);
+		//System.out.println("Lan scanner:                   Received response:");
+		//System.out.println(response.toString());
+		System.out.println("dgfffghgfhgf");
+		responses.add(response);
+		System.out.println("RESPONSES: ".concat(String.valueOf(this.responses.size())));
 	}
 }

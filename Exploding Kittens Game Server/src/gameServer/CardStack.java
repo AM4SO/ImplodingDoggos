@@ -11,7 +11,7 @@ public class CardStack {
 		this.numPlayers = numPlayers;
 		cards = new Stack<Card>();
 		
-		int numDecks = (int) Math.ceil((double)(numPlayers)/5);
+		int numDecks = (int) Math.ceil(((double)(numPlayers))/5);
 		CardType[] cardTypes = new CardType[] {
 				CardType.Attack, CardType.Favour, CardType.Nope,
 				CardType.Shuffle, CardType.Skip, CardType.SeeTheFuture,

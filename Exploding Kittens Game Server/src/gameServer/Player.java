@@ -19,6 +19,14 @@ public class Player {
 		}
 		return null;
 	}
+	public static Player getPlayerByUserId(long userId) {
+		for (int i = 0; i < Player.players.size(); i++){
+			Player p = Player.players.get(i);
+			if(p.userId == userId) return p;
+		}
+		
+		return null;
+	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////
 	public BooleanVariable turnEnded, cardDrawn;
@@ -28,8 +36,11 @@ public class Player {
 	public String name;
 	public boolean isDead;
 	public PlayerCommunicator userCommunicator;
+	protected long userId;
 	private ArrayList<Card> cardsPlaying;
 	public int turnsLeft;
+	public boolean acknowledged;
+	
 	
 	public PlayerState getPlayerState(boolean cheat) {
 		PlayerState ret;
@@ -41,13 +52,20 @@ public class Player {
 		ret.isDead = isDead;
 		ret.name = name;
 		ret.turnsLeft = turnsLeft;
+		ret.userId = userId;
 		
 		if (cheat) ((CheatPlayerState) ret).cards = cards;
 		
 		return ret;
 	}
 	
+	public Player(long userId) {
+		init(userId);
+	}
 	public Player() {
+		init(GameServer.random.nextLong());
+	}
+	public void init(long userId) {
 		Player.players.add(this);
 		userCommunicator = new PlayerCommunicator(this);
 		isDead = false;
@@ -60,6 +78,7 @@ public class Player {
 		cards = new Hand();
 		cardsPlaying = new ArrayList<Card>();
 		turnsLeft = 0;
+		this.userId = userId;
 	}
 	
 	public void die() {

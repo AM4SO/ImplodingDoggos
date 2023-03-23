@@ -5,39 +5,29 @@ import org.json.JSONObject;
 import gameServer.CheatGameState;
 import gameServer.GameState;
 import gameServer.ImplodingDoggosUtils.ClientMessageContent;
+import gameServer.ImplodingDoggosUtils.ClientMessageType;
 
-public interface RemoteGameMessageAdapter{
+public interface RemoteGameMessageAdapter{/// TODO: CONVERT ALL THINGYS TO JSON OBJECTS BEFORE SENDING
 	public default void onMessageReceived(ClientMessageContent messageCont) {
-		switch(messageCont.messageType) {
-		case CardDrawn:
+		ClientMessageType messageType = messageCont.messageType;
+		if (messageType == ClientMessageType.CardDrawn) {
 			onCardDrawn((int)messageCont.args[0]);
-			break;
-		case CardPlayed:
+		}else if (messageType == ClientMessageType.CardPlayed) {
 			onCardPlayed((int)messageCont.args[0], (int)messageCont.args[1]);
-			break;
-		case CheatGameState:
+		}else if (messageType == ClientMessageType.CheatGameState) {
 			onCheatGameStateReceived((CheatGameState)messageCont.args[0]);
-			break;
-		case FullGameState:
+		}else if (messageType == ClientMessageType.FullGameState) {
 			onGameStateReceived((GameState)messageCont.args[0]);
-			break;
-		case MessageFromPeers:
+		}else if (messageType == ClientMessageType.MessageFromPeers) {
 			onMessageFromPeers((JSONObject)messageCont.args[0]);
-			break;
-		case PlayerDied:
+		}else if (messageType == ClientMessageType.PlayerDied) {
 			onPlayerDied((int)messageCont.args[0]);
-			break;
-		case PlayerJoined:
+		}else if (messageType == ClientMessageType.PlayerJoined) {
 			onPlayerJoined((int)messageCont.args[0]);
-			break;
-		case TurnEnded:
+		}else if (messageType == ClientMessageType.TurnEnded) {
 			onTurnEnded((int)messageCont.args[0]);
-			break;
-		case TurnStarted:
+		}else if (messageType == ClientMessageType.TurnStarted) {
 			onTurnStarted((int)messageCont.args[0]);
-			break;
-		default:
-			break;
 		}
 	}
 	

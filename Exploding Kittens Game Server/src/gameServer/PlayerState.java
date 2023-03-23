@@ -6,6 +6,7 @@ public class PlayerState {
 	String name;
 	boolean isDead;
 	int turnsLeft;
+	long userId;
 }
 class CheatPlayerState extends PlayerState{
 	Hand cards;

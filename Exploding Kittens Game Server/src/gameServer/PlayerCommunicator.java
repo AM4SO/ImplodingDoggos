@@ -21,7 +21,7 @@ public class PlayerCommunicator extends Thread {
 		sendRawMessage(bytes);
 	}public synchronized void sendRequestMessage(ClientMessage message) {
 		message.playerId = playerId;
-		System.out.println("Sending message of type: ".concat(message.cont.messageType.name())); // Errors come too fast to read this in console
+		System.out.println("Sending message of type: ".concat(message.cont.messageType.name()));
 	}
 	public Thread sendRequestMessageAsync(ClientMessage message) { // PlayerCommunicator.java
 		Thread t = GameServer.startNewThread(() -> sendRequestMessage(message));
@@ -56,11 +56,14 @@ class HumanPlayerCommunicator extends PlayerCommunicator{
 		/// until all players have received the message, so more messages aren't sent to some players before others have received,
 		/// a previous one.
 		super.sendRequestMessage(req);
+
+		System.out.println("SENT:>>DFDSFDJFDSFDNFSDFDFDFDSF");
 		try {
 			sendStream.writeObject(req);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("SENT:>>DFDSFDJFDSFDNFSDFDFDFDSF");
 	}
 }
 
