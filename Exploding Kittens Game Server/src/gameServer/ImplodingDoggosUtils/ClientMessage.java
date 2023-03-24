@@ -19,10 +19,10 @@ public class ClientMessage implements Serializable{
 		
 		return ret;
 	}
-	public static ClientMessage MessageFromPeers(JSONObject message) {
+	public static ClientMessage MessageFromPeers(String message) {
 		ClientMessage ret = new ClientMessage();
 		ret.cont = new ClientMessageContent(ClientMessageType.MessageFromPeers);
-		ret.cont.args = new Object[] {message.toString()};
+		ret.cont.args = new Object[] {message};
 		
 		return ret;
 	}
