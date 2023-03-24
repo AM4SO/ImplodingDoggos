@@ -66,7 +66,7 @@
                     app:checkedState="unchecked" />
 
                 <EditText
-                    android:id="@+id/editTextNumber"
+                    android:id="@+id/txt_NumBots"
                     android:layout_width="match_parent"
                     android:layout_height="65dp"
                     android:ems="10"
