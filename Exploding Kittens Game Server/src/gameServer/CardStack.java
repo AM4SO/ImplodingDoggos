@@ -1,17 +1,19 @@
 package gameServer;
 
+import java.io.Serializable;
 import java.util.Stack;
 
 import gameServer.ImplodingDoggosUtils.PlrCardPair;
 
-public class CardStack {
+public class CardStack implements Serializable{
+	private static final long serialVersionUID = 1L;
 	Stack<Card> cards;
 	public int numPlayers;
 	public CardStack(int numPlayers) { // 42 cards in one deck, excluding exploding kittens and defuse
 		this.numPlayers = numPlayers;
 		cards = new Stack<Card>();
 		
-		int numDecks = (int) Math.ceil((double)(numPlayers)/5);
+		int numDecks = (int) Math.ceil(((double)(numPlayers))/5);
 		CardType[] cardTypes = new CardType[] {
 				CardType.Attack, CardType.Favour, CardType.Nope,
 				CardType.Shuffle, CardType.Skip, CardType.SeeTheFuture,

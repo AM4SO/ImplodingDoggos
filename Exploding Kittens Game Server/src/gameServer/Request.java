@@ -2,6 +2,8 @@ package gameServer;
 
 import java.io.Serializable;
 
+import org.json.JSONObject;
+
 public class Request implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
@@ -27,5 +29,29 @@ public class Request implements Serializable{
 		return ret;
 	}
 	/////////////////////////////////////////////////////////////////////////////////
+	public static Request DrawCardRequest(long userId) {
+		Request ret = new Request();
+		ret.userId = userId;
+		ret.content = new RequestContent(RequestType.DrawCard);
+		return ret;
+	}
+	public static Request PlayCardRequest(long userId, int cardId, Object[] args) {
+		Request ret = new Request();
+		ret.userId = userId;
+		ret.content = new RequestContent(RequestType.PlayCard);
+		return ret;
+	}
+	public static Request MessagePeersRequest(long userId, JSONObject message) {
+		return null;
+	}
+	public static Request GameStateRequest() {
+		return null;
+	}
+	public static Request Acknowledge(long userId) {
+		Request ret = new Request();
+		ret.userId = userId;
+		ret.content = new RequestContent(RequestType.Acknowledge);
+		return ret;
+	}
 	
 }

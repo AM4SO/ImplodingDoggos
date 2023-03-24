@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.net.Socket;
 
 import gameServer.ImplodingDoggosUtils.ClientMessage;
+import gameServer.ImplodingDoggosUtils.ClientMessageType;
 
 public class PlayerCommunicator extends Thread {
 	int playerId;
@@ -21,7 +22,6 @@ public class PlayerCommunicator extends Thread {
 		sendRawMessage(bytes);
 	}public synchronized void sendRequestMessage(ClientMessage message) {
 		message.playerId = playerId;
-		System.out.println("Sending message of type: ".concat(message.cont.messageType.name())); // Errors come too fast to read this in console
 	}
 	public Thread sendRequestMessageAsync(ClientMessage message) { // PlayerCommunicator.java
 		Thread t = GameServer.startNewThread(() -> sendRequestMessage(message));
@@ -45,6 +45,7 @@ class HumanPlayerCommunicator extends PlayerCommunicator{
 	@Override
 	public void sendRawMessage(byte[] data) throws IOException {
 		sendStream.write(data);
+		sendStream.flush();
 	}
 	@Override
 	public synchronized void sendRequestMessage(ClientMessage req) { // PlayerCommunicator.Java
@@ -56,8 +57,10 @@ class HumanPlayerCommunicator extends PlayerCommunicator{
 		/// until all players have received the message, so more messages aren't sent to some players before others have received,
 		/// a previous one.
 		super.sendRequestMessage(req);
+
 		try {
 			sendStream.writeObject(req);
+			sendStream.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

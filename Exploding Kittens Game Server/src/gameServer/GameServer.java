@@ -28,16 +28,17 @@ public class GameServer {
 	public MultiSetterBooleanVariable playerJoined;
 	public RequestProcessor requestHandler;
 	ServerListener listener;
+	Thread playerJoinThread;
 	
 	public GameState getGameState(Player player) {
 		GameState gameState = new GameState();
-		gameState.cards = Card.Cards;
-		gameState.localPlayerHand = player.cards;
+		gameState.cards = Card.getAllCardStates();
+		gameState.localPlayerHand = player.cards.getHandState();
 		gameState.playerTurn = playerGo;
 		gameState.players = new ArrayList<PlayerState>();
 		for (Player plr : players) gameState.players.add(plr.getPlayerState(false));
 		
-		return null;
+		return gameState;
 	}
 	
 	public GameServer(int port) {
@@ -54,14 +55,30 @@ public class GameServer {
 		listener = new ServerListener(port);
 		System.out.println("Starting listener");
 		listener.start();
-
-		System.out.println("Started listener");
-	}public void init() {
-		players.add(new GameTestingPlayer());
+		
+		playerJoinThread = new Thread(() -> allowPlayerJoining());
+		playerJoinThread.start();
+	}
+	public void allowPlayerJoining() {
+		boolean enoughPlayers = false;
+		while (waitingForPlayers) { // Pause thread, tell other thread to awake this thread in x time, and tell otherer thread to
+			///                     Tell this thread when plr joined. -- Thread.Notify();
+			int waitTime = 10000;//// If there aren't enough players to start the game, wait 30 secs for players to join
+			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
+			if(Functions.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
+				Player plr = (Player) playerJoined.arg;
+				System.out.println(plr.name.concat(" is being added to the list of players"));
+				players.add(plr);
+			}else if (players.size() >= GameServer.minPlayers) enoughPlayers = true; // break loop if no players join and we dont need more.
+			playerJoined.reset();
+		}
+	}
+	public void init() {
+		//players.add(new GameTestingPlayer());
 		//players.add(new GameTestingPlayer());
 		
 		//// Give players time to join the game
-		boolean enoughPlayers = false;
+		/*boolean enoughPlayers = false;
 		while (!enoughPlayers) { // Pause thread, tell other thread to awake this thread in x time, and tell otherer thread to
 			///                     Tell this thread when plr joined. -- Thread.Notify();
 			int waitTime = 6000;//// If there aren't enough players to start the game, wait 30 secs for players to join
@@ -74,7 +91,9 @@ public class GameServer {
 			playerJoined.reset();
 		}
 		
+		waitingForPlayers = false;*/
 		waitingForPlayers = false;
+		playerJoinThread.interrupt();
 		
 		drawPile = new CardStack(players.size());
 		
@@ -88,8 +107,29 @@ public class GameServer {
 		
 		System.out.println("Initialised game");
 	}
+	public void awaitAcknowledgeAll() {
+		for (Player p : players) {
+			while (!p.acknowledged)
+				try {
+					Thread.sleep(50);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			System.out.println(p.name.concat(" has acknowledged"));
+		}
+	}
 	public void startServer() {
-		while(waitingForPlayers) continue;
+		//while(waitingForPlayers) continue;
+		ArrayList<ClientMessage> states = new ArrayList<ClientMessage>();
+		for (Player p : players) {
+			states.add(ClientMessage.FullGameState(getGameState(p)));
+		}
+		System.out.println("Sending out game states");
+		sendToPlayers(players, states);
+		System.out.println("Sent");
+		awaitAcknowledgeAll();
+		
 		System.out.println("Starting game");
 		while (Player.totalPlayers - Player.playersDead > 1) {
 			Player plr = players.get(playerGo);
@@ -180,10 +220,6 @@ public class GameServer {
 		Card card = (Card)Card;
 		card.booleanGPA.set();
 	}
-	public static void onTurnEnded(Object plr) {
-		Player player = (Player) plr;
-		player.endTurn();
-	}
 	public static void onPlayerConnected(Object plr) {
 		Player player = (Player) plr;
 		assert(player != null);
@@ -210,6 +246,14 @@ public class GameServer {
 			EventSystem.tryPlayCard.invokeSync(x);
 		}
 		
+	}
+	public static void onTurnStarted(Object player) {
+		ClientMessage message = ClientMessage.TurnStarted(((Player)player).playerId);
+		sendToPlayers(GameServer.game.players,message);
+	}
+	public static void onTurnEnded(Object player) {
+		ClientMessage message = ClientMessage.TurnEnded(((Player)player).playerId);
+		sendToPlayers(GameServer.game.players,message);
 	}
 
 	public static Thread startNewThread(Runnable runnable) { // To ease the future switching towards Threadpools
@@ -248,6 +292,8 @@ interface RequestProcessor{
 			onRequestCheatGameState(player);
 		}else if (reqType == RequestType.RequestGameState) {
 			onRequestGameState(player);
+		}else if (reqType == RequestType.Acknowledge) {
+			onRequestAcknowledge(player);
 		}
 	}
 	
@@ -256,6 +302,7 @@ interface RequestProcessor{
 	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON);
 	public void onRequestCheatGameState(Player player);
 	public void onRequestGameState(Player player);
+	public void onRequestAcknowledge(Player player);
 }
 
 
@@ -298,5 +345,9 @@ class RequestHandler implements RequestProcessor{
 		
 		player.userCommunicator.sendRequestMessage(message);
 	}
-	
+
+	@Override
+	public void onRequestAcknowledge(Player player) {
+		player.acknowledged = true;
+	}
 }

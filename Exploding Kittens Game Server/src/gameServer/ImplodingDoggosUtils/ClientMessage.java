@@ -22,7 +22,7 @@ public class ClientMessage implements Serializable{
 	public static ClientMessage MessageFromPeers(JSONObject message) {
 		ClientMessage ret = new ClientMessage();
 		ret.cont = new ClientMessageContent(ClientMessageType.MessageFromPeers);
-		ret.cont.args = new Object[] {message};
+		ret.cont.args = new Object[] {message.toString()};
 		
 		return ret;
 	}
@@ -32,16 +32,18 @@ public class ClientMessage implements Serializable{
 		ret.cont.args = new Object[] {playerDied};
 		return ret;
 	}
-	public static ClientMessage TurnStarted() {
+	public static ClientMessage TurnStarted(int playerTurn) {
 		ClientMessage message = new ClientMessage();
 		message.cont = new ClientMessageContent();
 		message.cont.messageType = ClientMessageType.TurnStarted;
+		message.cont.args = new Object[] {playerTurn};
 		return message;
 	}
-	public static ClientMessage TurnEnded() {
+	public static ClientMessage TurnEnded(int player) {
 		ClientMessage message = new ClientMessage();
 		message.cont = new ClientMessageContent();
 		message.cont.messageType = ClientMessageType.TurnEnded;
+		message.cont.args = new Object[] {player};
 		return message;
 	}
 	public static ClientMessage CardDrawn(int player, int cardId) {

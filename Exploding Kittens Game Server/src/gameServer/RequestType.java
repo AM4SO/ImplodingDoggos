@@ -7,4 +7,5 @@ public enum RequestType{
 	MessagePeers,
 	RequestGameState,
 	RequestCheatGameState,
+	Acknowledge,
 }

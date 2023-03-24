@@ -12,8 +12,8 @@ public abstract class Functions {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Sleep ended early");
+				//e.printStackTrace();
 			}
 		}
 		boolean ret = boolVar.value != boolVar.defaultVal;

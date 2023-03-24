@@ -1,10 +1,21 @@
 package gameServer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import gameServer.ImplodingDoggosUtils.BooleanVariable;
-
-public class Card {
+class CardState implements Serializable{
+	private static final long serialVersionUID = 1L;
+	public CardPack cardPack;
+	public DogCardType SpecificCardType;
+	public CardType cardType;
+	//public CardAssetPack assetPack
+	public int id;
+}
+public class Card implements Serializable{
+	
+	private static final long serialVersionUID = 1L;
+	
 	public static int CardIdCounter = 0;
 	public static ArrayList<Card> Cards = new ArrayList<Card>();;
 	
@@ -12,6 +23,16 @@ public class Card {
 		for(Card c : Cards) {
 	 		if (c.id == cardId) return c;
 		}
+		return null;
+	}
+	public CardState getCardState() {
+		CardState ret = new CardState();
+		ret.cardPack = cardPack;
+		ret.cardType = cardType;
+		ret.SpecificCardType = specificCardType;
+		//ret.assetPack = assetPack;
+		ret.id = id;
+		
 		return null;
 	}
 	
@@ -34,8 +55,21 @@ public class Card {
 	public void redoRandom() {
 		randomNumber = GameServer.random.nextDouble();
 	}
+	public static ArrayList<CardState> getAllCardStates() {
+		return getAllCardStates(Card.Cards);
+	}public static ArrayList<CardState> getAllCardStates(ArrayList<Card> cards) {
+		ArrayList<CardState> ret = new ArrayList<CardState>();
+		for(Card c : cards) {
+			ret.add(c.getCardState());
+		}
+		return ret;
+	}
 }
-class CardAssetPack{ // change to import packs from file which uses JSON format. 
+class CardAssetPack implements Serializable{ // change to import packs from file which uses JSON format. 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static int idCounter=0;
 	public int assetPackId;
 	final static CardAssetPack[] ExplodingKittens = new CardAssetPack[] {

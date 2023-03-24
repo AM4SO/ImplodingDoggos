@@ -10,10 +10,11 @@ import java.util.Random;
 import gameServer.Request;
 import gameServer.ImplodingDoggosUtils.ClientMessage;
 import gameServer.ImplodingDoggosUtils.ClientMessageContent;
+import gameServer.ImplodingDoggosUtils.ClientMessageType;
 
 
 ///////////////////////////////////////////////////////////////////////// REMINDER: SWITCH TO THREADPOOLS for reuse of threads.
-public class RemoteGameAdapter{
+public class RemoteGameAdapter implements RequestMaker{
 	static Random Random = new Random();
 	
 	private Socket connection;
@@ -28,27 +29,21 @@ public class RemoteGameAdapter{
 	private ImplodingDoggosUser user;
 	private RemoteGameMessageAdapter messageHandler;
 	
+	public ImplodingDoggosUser getUser() {return user;}
 	
 	private IOResult readRequests() {
-		try {
-			ClientMessage request = (ClientMessage) inStream.readObject();
-			ClientMessageContent cont = request.cont;
-			switch (cont.messageType) {
-			case TurnStarted:
-				messageHandler.onTurnStarted((int)cont.args[0]);
-				break;
-			case CardPlayed:
-				messageHandler.onCardPlayed((int)cont.args[0], (int) cont.args[1]);
-			default:
-				break;
+		while (true) {
+			try {
+				ClientMessage request = (ClientMessage) inStream.readObject();
+				ClientMessageContent cont = request.cont;
+				messageHandler.onMessageReceived(cont);
+				
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+				if (e.getClass() == IOException.class)
+					return new IOResult((IOException)e);
 			}
-			
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-			if (e.getClass() == IOException.class)
-				return new IOResult((IOException)e);
 		}
-		return IOResult.Success;
 	}
 	
 	public void playCard(int cardId) {
@@ -69,6 +64,10 @@ public class RemoteGameAdapter{
 	private void init(RemoteGameDetails gameToConnect, ImplodingDoggosUser user) {
 		connection = new Socket();
 		this.game = gameToConnect;
+		this.user = user;
+	}
+	public void setRemoteGameMessageAdapter(RemoteGameMessageAdapter adapter) {
+		this.messageHandler = adapter;
 	}
 	public IOResult connectToGame() {
 		try {
@@ -89,4 +88,51 @@ public class RemoteGameAdapter{
 		}
 		return IOResult.Success;
 	}
+
+	@Override
+	public void drawCard() {
+		try {
+			outStream.writeObject(Request.DrawCardRequest(user.userId));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void messagePeers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void RequestGameState() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendAcknowledge() {
+		try {
+			System.out.println("WRITING ACKNOWLEDGE");
+			outStream.writeObject(Request.Acknowledge(user.userId));
+			System.out.println("WROTE ACKNOWLEDGE");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}
+/*
+ * 	JoinGame,
+	PlayCard,
+	DrawCard,
+	MessagePeers,
+	RequestGameState,
+	RequestCheatGameState,*/
+interface RequestMaker{
+	public void playCard(int cardId);
+	public void drawCard();
+	public void messagePeers();
+	public void RequestGameState();
+	public void sendAcknowledge();
 }

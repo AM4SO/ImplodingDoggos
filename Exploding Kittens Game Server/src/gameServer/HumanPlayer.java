@@ -9,19 +9,9 @@ import gameServer.ImplodingDoggosUtils.MultiSetterBooleanVariable;
 public class HumanPlayer extends Player {
 	static protected MultiSetterBooleanVariable PlrCreating = new MultiSetterBooleanVariable(false);
 	static protected boolean lock = false;
-	public static HumanPlayer getPlayerByUserId(long userId) {
-		for (int i = 0; i < Player.players.size(); i++){
-			Player p = Player.players.get(i);
-			if (HumanPlayer.class.isInstance(p)) {
-				HumanPlayer plr = (HumanPlayer) p;
-				if(plr.userId == userId) return plr;
-			}
-		}
-		
-		return null;
-	}
 	
-	public long userId;
+	
+	
 	//private Socket socket;
 	public HumanPlayer(long userId, ObjectOutputStream stream) {
 		super();
