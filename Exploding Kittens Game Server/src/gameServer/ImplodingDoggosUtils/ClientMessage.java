@@ -53,4 +53,10 @@ public class ClientMessage implements Serializable{
 		message.cont.args = new Object[] {player, cardId};
 		return message;
 	}
+	public static ClientMessage cardPlayed(int player, int card) {
+		ClientMessage message = new ClientMessage();
+		message.cont = new ClientMessageContent(ClientMessageType.CardPlayed);
+		message.cont.args = new Object[] {player, card};
+		return message;
+	}
 }

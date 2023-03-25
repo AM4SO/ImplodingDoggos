@@ -3,7 +3,7 @@ package gameServer.ImplodingDoggosUtils;
 public enum ClientMessageType{
 	TurnStarted, // playerId
 	TurnEnded, // playerId
-	CardPlayed, // cardId, playerId
+	CardPlayed, // playerId, cardId
 	FullGameState, // GameState
 	PlayerDied, // playerId
 	PlayerJoined, // playerId

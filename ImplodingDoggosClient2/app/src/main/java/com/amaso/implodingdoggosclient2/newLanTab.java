@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import gameServer.GameMaker;
 import gameServer.Main;
 
 /**
@@ -21,6 +22,7 @@ import gameServer.Main;
  * create an instance of this fragment.
  */
 public class newLanTab extends Fragment {
+    public static GameMaker gameMaker;
     TextView gameNameText;
     CheckBox explodingKittensCheck;
     CheckBox streakingDoggosCheck;
@@ -35,15 +37,30 @@ public class newLanTab extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_new_lan_tab, container, false);
     }
+    public int tryParseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        }catch (Exception e){
+            return -1;
+        }
+    }
     public void startServer(){
-        CharSequence gameName = gameNameText.getText();
-        CharSequence numAiPlayers = numAiPlayersText.getText();
-        CharSequence maxHumanPlayers = maxHumanPlayersText.getText();
-        CharSequence joinPassword = joiningPasswordText.getText();
+        String gameName = (String)gameNameText.getText();
+        if (gameName == "")
+            gameName = "Some unnamed game";
+        int numAiPlayers = tryParseInt((String)numAiPlayersText.getText());
+        if (numAiPlayers < 0) numAiPlayers = 1;
+        int maxHumanPlayers = tryParseInt((String)maxHumanPlayersText.getText());
+        if ((maxHumanPlayers < 1) || (maxHumanPlayers <= 1 && numAiPlayers < 1))
+            maxHumanPlayers = 2;
+        String joinPassword = (String)joiningPasswordText.getText();
         boolean explodingKittensExpansion = explodingKittensCheck.isChecked();
         boolean streakingDoggosExpansion = explodingKittensCheck.isChecked();
         boolean meowingDoggosExpansion = explodingKittensCheck.isChecked();
-        
+        int expansionPack = (explodingKittensExpansion ? 1:0) + (streakingDoggosExpansion ? 1:0)<<1 + (meowingDoggosExpansion ? 1:0) << 2;
+
+        gameMaker = new GameMaker(25565, gameName, expansionPack, numAiPlayers, maxHumanPlayers, joinPassword);
+        startActivity(new Intent(this.getContext(), Game.class));
     }
     @Override
     public void onResume(){
@@ -66,5 +83,6 @@ public class newLanTab extends Fragment {
         numAiPlayersText = (TextView) getView().findViewById(R.id.txt_NumBots);
         maxHumanPlayersText = (TextView) getView().findViewById(R.id.txt_maxHumanPlayers);
         joiningPasswordText = (TextView) getView().findViewById(R.id.txt_joinPassword);
+
     }
 }

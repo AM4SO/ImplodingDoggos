@@ -287,7 +287,7 @@ interface RequestProcessor{
 			onRequestPlayCard(new PlayCardArgs(player, card, request.args));
 		}else if (reqType == RequestType.MessagePeers) {
 			if (argsSupplied != 1) return;
-			onRequestMessagePeers((HumanPlayer) player, (JSONObject) request.args[0]);
+			onRequestMessagePeers((HumanPlayer) player, (String) request.args[0]);
 		}else if (reqType == RequestType.RequestCheatGameState) {
 			onRequestCheatGameState(player);
 		}else if (reqType == RequestType.RequestGameState) {
@@ -299,7 +299,7 @@ interface RequestProcessor{
 	
 	public void onRequestDrawCard(Player player);
 	public void onRequestPlayCard(PlayCardArgs plrCard);
-	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON);
+	public void onRequestMessagePeers(HumanPlayer player, String messageJSON);
 	public void onRequestCheatGameState(Player player);
 	public void onRequestGameState(Player player);
 	public void onRequestAcknowledge(Player player);
@@ -327,7 +327,7 @@ class RequestHandler implements RequestProcessor{
 	}
 
 	@Override
-	public void onRequestMessagePeers(HumanPlayer player, JSONObject messageJSON) {
+	public void onRequestMessagePeers(HumanPlayer player, String messageJSON) {
 		ClientMessage message = ClientMessage.MessageFromPeers(messageJSON);
 		GameServer.sendToPlayers(game.players, message);
 	}

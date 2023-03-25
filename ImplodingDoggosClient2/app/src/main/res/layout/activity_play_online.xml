@@ -8,7 +8,7 @@
     android:background="@color/design_default_color_error">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView3"
+        android:id="@+id/view_chat"
         android:name="com.amaso.implodingdoggosclient2.Chat"
         android:layout_width="371dp"
         android:layout_height="425dp"
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.141"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView3">
+        app:layout_constraintTop_toBottomOf="@+id/view_chat">
 
         <TextView
             android:id="@+id/txt_expansionPacks"

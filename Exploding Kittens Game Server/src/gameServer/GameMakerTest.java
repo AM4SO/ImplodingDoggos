@@ -164,7 +164,7 @@ class GameMakerTest {
 		}
 
 		@Override
-		public void onCardDrawn(int cardId) {
+		public void onCardDrawn(int playerId, int cardId) {
 			// TODO Auto-generated method stub
 			
 		}

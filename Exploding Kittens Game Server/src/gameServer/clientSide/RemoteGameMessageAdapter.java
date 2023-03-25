@@ -11,7 +11,7 @@ public interface RemoteGameMessageAdapter{/// TODO: CONVERT ALL THINGYS TO JSON 
 	public default void onMessageReceived(ClientMessageContent messageCont) {
 		ClientMessageType messageType = messageCont.messageType;
 		if (messageType == ClientMessageType.CardDrawn) {
-			onCardDrawn((int)messageCont.args[0]);
+			onCardDrawn((int)messageCont.args[0],(int)messageCont.args[1]);
 		}else if (messageType == ClientMessageType.CardPlayed) {
 			onCardPlayed((int)messageCont.args[0], (int)messageCont.args[1]);
 		}else if (messageType == ClientMessageType.CheatGameState) {
@@ -37,7 +37,7 @@ public interface RemoteGameMessageAdapter{/// TODO: CONVERT ALL THINGYS TO JSON 
 	public void onGameStateReceived(GameState gameState);
 	public void onPlayerJoined(int playerId);
 	public void onPlayerDied(int playerId);
-	public void onCardDrawn(int cardId);
+	public void onCardDrawn(int playerId, int cardId);
 	public void onCheatGameStateReceived(CheatGameState cheatGameState);
 	public void onMessageFromPeers(String message);
 	public void onTurnEnded(int playerId);

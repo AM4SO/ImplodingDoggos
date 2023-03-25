@@ -107,7 +107,7 @@ class TestingBot extends Bot{
 		public void onPlayerDied(int playerId) {}
 
 		@Override
-		public void onCardDrawn(int cardId) {}
+		public void onCardDrawn(int playerId, int cardId) {}
 
 		@Override
 		public void onCheatGameStateReceived(CheatGameState cheatGameState) {}
