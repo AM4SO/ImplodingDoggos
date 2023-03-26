@@ -10,6 +10,10 @@ public enum ClientMessageType{
 	CardDrawn, // playerId (drawer), cardId
 	MessageFromPeers, // PeerMessage(type, fromId, etc) -- This message may be received immediately after playerJoined.  ****A****
 	CheatGameState, // A game state including information which only a cheater should be able to access. Used by AI players. 
+	GameStarted,
+	GameEnded,
+	RequestAcknowledge,
+	RequestClientReady,
 }
 /// ****A**** Information which isn't strictly necessary for the functioning of the game is sent using RequestType.MessagePeers,
 ///           received using ClientMessageType.MessageFromPeers, and it can be further split up by enum "PeerMessageType". It gets 

@@ -8,4 +8,5 @@ public enum RequestType{
 	RequestGameState,
 	RequestCheatGameState,
 	Acknowledge,
+	Ready,
 }

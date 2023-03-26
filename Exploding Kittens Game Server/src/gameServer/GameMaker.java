@@ -97,7 +97,6 @@ class TestingBot extends Bot{
 
 		@Override
 		public void onGameStateReceived(GameState gameState) {
-			parent.acknowledged = true;
 		}
 
 		@Override

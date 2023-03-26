@@ -49,7 +49,7 @@ public class GameHandler {
         localPlayer = new ClientSidePlayer();
         localPlayer.playerDetails = new PlayerDetails();
         localPlayer.playerDetails.playerName = "AMASO";
-        localPlayer.playerDetails.userId = GameServer.random.nextLong();
+        localPlayer.playerDetails.userId = localUser.userId;
         localPlayer.playerDetails.assetPack = new PlayerAssetPack();
         localPlayer.playerState = new PlayerState();
 
@@ -119,7 +119,7 @@ class PeerMessageHandler implements  PeerMessageInterface{
         String messageText = (String)message.args[0];
         //String messageText = message.
         long userId = message.userId;
-        ChatMessageDetails chatMessage = new ChatMessageDetails(PlayerDetails.getPlayerByUserId(userId),messageText);
+        ChatMessageDetails chatMessage = new ChatMessageDetails(ClientSidePlayer.getPlayerByUserId(userId).playerDetails,messageText);
         parentGame.addReceivedChatMessage(chatMessage);
     }
 

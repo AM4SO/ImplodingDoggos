@@ -125,10 +125,8 @@ public class GameServer {
 		for (Player p : players) {
 			states.add(ClientMessage.FullGameState(getGameState(p)));
 		}
-		System.out.println("Sending out game states");
 		sendToPlayers(players, states);
-		System.out.println("Sent");
-		awaitAcknowledgeAll();
+		//awaitAcknowledgeAll();
 		
 		System.out.println("Starting game");
 		while (Player.totalPlayers - Player.playersDead > 1) {

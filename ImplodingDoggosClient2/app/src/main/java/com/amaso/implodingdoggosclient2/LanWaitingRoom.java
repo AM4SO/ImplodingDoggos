@@ -1,5 +1,6 @@
 package com.amaso.implodingdoggosclient2;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class LanWaitingRoom extends AppCompatActivity {
         findViewById(R.id.btn_startGame).setOnClickListener((v) -> {
             GameServer.startNewThread(() -> GameHandler.gameMaker.startGame());// TODO: Check: should be async?
             findViewById(R.id.btn_startGame).setClickable(false);
+            startActivity(new Intent(v.getContext(),Game.class));
         });
     }
     @Override

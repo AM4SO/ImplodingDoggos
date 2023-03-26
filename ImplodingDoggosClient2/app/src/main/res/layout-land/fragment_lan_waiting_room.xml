@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LanWaitingRoom"
+    android:background="@color/design_default_color_error">
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/view_chat"
+        android:name="com.amaso.implodingdoggosclient2.Chat"
+        android:layout_width="309dp"
+        android:layout_height="298dp"
+        app:layout_constraintEnd_toEndOf="@+id/lbl_watingRoomChat"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/lbl_watingRoomChat"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_watingRoomChat"
+        tools:layout="@layout/fragment_chat" />
+
+    <TextView
+        android:id="@+id/lbl_watingRoomChat"
+        android:layout_width="310dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:text="Chat"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.961"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_startGame"
+        android:layout_width="359dp"
+        android:layout_height="69dp"
+        android:text="START GAME"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/view_playerList"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/view_playerList"
+        app:layout_constraintTop_toBottomOf="@+id/view_playerList"
+        app:layout_constraintVertical_bias="0.33" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/view_playerList"
+        android:name="com.amaso.implodingdoggosclient2.PlayerList"
+        android:layout_width="365dp"
+        android:layout_height="226dp"
+        android:layout_marginTop="56dp"
+        app:layout_constraintEnd_toStartOf="@+id/view_chat"
+        app:layout_constraintHorizontal_bias="0.432"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_player_list" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
