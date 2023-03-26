@@ -3,20 +3,19 @@ package com.amaso.implodingdoggosclient2;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.concurrent.RecursiveAction;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,8 +27,10 @@ public class Chat extends Fragment {
     private ChatViewAdapter chatHandler;
     private RecyclerView chatView;
     private TextView chatInput;
+    private PlayerDetails localPlayerDetails;
     public Chat() {
         chatHandler = new ChatViewAdapter();
+        GameHandler.gameHandler.chat = this;
         // Required empty public constructor
     }
     public static Chat newInstance() {
@@ -57,14 +58,17 @@ public class Chat extends Fragment {
         chatInput = ret.findViewById(R.id.txt_message);
 
         ret.findViewById(R.id.btn_sendMessage).setOnClickListener(view -> {
-            CharSequence message = chatInput.getText();
-            if (message.length() == 0 ) return;
+            CharSequence message = chatInput.getText().toString().trim();
+            if (message.length() == 0) return;
             if (message.length() > MAX_MESSAGE_LENGTH){
                 message = message.subSequence(0, MAX_MESSAGE_LENGTH-1);
             }
-            addMessage("You: " + message);
+            addMessage(message);
             chatInput.setText("");
+            GameHandler.gameHandler.sendChatMessage(message.toString());
         });
+        localPlayerDetails = new PlayerDetails();
+        localPlayerDetails.playerName = "You";
 
         return ret;
     }
@@ -75,22 +79,34 @@ public class Chat extends Fragment {
     }
 
     public void addMessage(CharSequence message){
-        chatHandler.addMessage(message);//chatHandler.createViewHolder(this.getView().findViewById(R.id.view_chatView),0);
+        chatHandler.addMessage(new ChatMessageDetails(localPlayerDetails, message.toString()));//chatHandler.createViewHolder(this.getView().findViewById(R.id.view_chatView),0);
+    }
+    public void addMessage(ChatMessageDetails message){
+        chatHandler.addMessage(message);
     }
 }
 
-class ChatViewAdapter extends RecyclerView.Adapter<ChatViewAdapter.ViewHolder>{
+class ChatViewAdapter extends RecyclerView.Adapter<ChatViewAdapter.ChatItemViewHolder>{
     private ArrayList<CharSequence> chatMessages;
+    private ArrayList<ChatMessageDetails> chatMessagesDetails;
     private RecyclerView parent;
 
     public void addMessage(CharSequence mess){
         chatMessages.add(mess);
         this.notifyDataSetChanged();
-        parent.scrollBy(0,1000);
+        parent.scrollBy(0, 1000);
+    }
+    public void addMessage(ChatMessageDetails message){
+        new Handler(Looper.getMainLooper()).post(() -> {
+            chatMessagesDetails.add(message);
+            this.notifyDataSetChanged();
+            parent.scrollBy(0, 1000);
+        });
     }
 
     public ChatViewAdapter(){
         chatMessages = new ArrayList<CharSequence>();
+        chatMessagesDetails = new ArrayList<ChatMessageDetails>();
     }
 
     @Override
@@ -101,26 +117,28 @@ class ChatViewAdapter extends RecyclerView.Adapter<ChatViewAdapter.ViewHolder>{
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ChatItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_chat_item,parent,false);
 
-        return new ViewHolder(view);
+        return new ChatItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ChatItemViewHolder holder, int position) {
         TextView view = holder.getTextView();
-        view.setText(chatMessages.get(position));
+        ChatMessageDetails message = chatMessagesDetails.get(position);
+
+        view.setText(message.player.playerName.concat(": ").concat(message.message));
     }
 
     @Override
     public int getItemCount() {
-        return chatMessages.size();
+        return chatMessagesDetails.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ChatItemViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
-        public ViewHolder(@NonNull View itemView) {
+        public ChatItemViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.txt_chatItemMessageText);
         }

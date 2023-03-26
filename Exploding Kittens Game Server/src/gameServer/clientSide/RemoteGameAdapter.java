@@ -7,6 +7,7 @@ import java.net.Inet4Address;
 import java.net.Socket;
 import java.util.Random;
 
+import gameServer.GameServer;
 import gameServer.Request;
 import gameServer.ImplodingDoggosUtils.ClientMessage;
 import gameServer.ImplodingDoggosUtils.ClientMessageContent;
@@ -46,7 +47,7 @@ public class RemoteGameAdapter implements RequestMaker{
 		}
 	}
 	
-	public void playCard(int cardId) {
+	public void playCard(int cardId, int atPlayer) {
 		
 	}
 	
@@ -91,15 +92,11 @@ public class RemoteGameAdapter implements RequestMaker{
 
 	@Override
 	public void drawCard() {
-		try {
-			outStream.writeObject(Request.DrawCardRequest(user.userId));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		makeRequest(Request.DrawCardRequest(user.userId));
 	}
 
 	@Override
-	public void messagePeers() {
+	public void messagePeers(String message) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -112,14 +109,25 @@ public class RemoteGameAdapter implements RequestMaker{
 
 	@Override
 	public void sendAcknowledge() {
+		makeRequest(Request.Acknowledge(user.userId));
+	}
+	public void makeRequest(Request req) {
 		try {
-			System.out.println("WRITING ACKNOWLEDGE");
-			outStream.writeObject(Request.Acknowledge(user.userId));
-			System.out.println("WROTE ACKNOWLEDGE");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			req.gameId = game.gameId;
+			req.sessionToken = user.sessionToken;
+			outStream.writeObject(req);
+		}catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	public void makeRequestAsync(Request req) {
+		GameServer.startNewThread(() -> makeRequest(req));
+	}
+
+	@Override
+	public void playCard(int cardId) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 /*
@@ -131,8 +139,9 @@ public class RemoteGameAdapter implements RequestMaker{
 	RequestCheatGameState,*/
 interface RequestMaker{
 	public void playCard(int cardId);
+	public void playCard(int cardId, int atPlayer);
 	public void drawCard();
-	public void messagePeers();
+	public void messagePeers(String message);
 	public void RequestGameState();
 	public void sendAcknowledge();
 }

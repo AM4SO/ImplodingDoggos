@@ -12,8 +12,8 @@ public class GameState implements Serializable{
 		playerTurn = -1;
 	}
 	
-	ArrayList<CardState> cards;
-	ArrayList<PlayerState> players;
-	HandState localPlayerHand;
-	int playerTurn;
+	public ArrayList<CardState> cards;
+	public ArrayList<PlayerState> players;
+	public HandState localPlayerHand;
+	public int playerTurn;
 }

@@ -13,8 +13,16 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+
 import gameServer.GameMaker;
+import gameServer.GameServer;
 import gameServer.Main;
+import gameServer.clientSide.ImplodingDoggosUser;
+import gameServer.clientSide.RemoteGameAdapter;
+import gameServer.clientSide.RemoteGameDetails;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,11 +38,27 @@ public class newLanTab extends Fragment {
     TextView numAiPlayersText;
     TextView maxHumanPlayersText;
     TextView joiningPasswordText;
+    Inet4Address localHost;
+
+    public void setLocalHost(){
+        try {
+            GameServer.startNewThread(() -> {
+                try {
+                    localHost = (Inet4Address) Inet4Address.getLocalHost();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+            }).join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        setLocalHost();
         return inflater.inflate(R.layout.fragment_new_lan_tab, container, false);
     }
     public int tryParseInt(String s) {
@@ -45,22 +69,29 @@ public class newLanTab extends Fragment {
         }
     }
     public void startServer(){
-        String gameName = (String)gameNameText.getText();
+        String gameName = gameNameText.getText().toString();
         if (gameName == "")
             gameName = "Some unnamed game";
-        int numAiPlayers = tryParseInt((String)numAiPlayersText.getText());
+        int numAiPlayers = tryParseInt(numAiPlayersText.getText().toString());
         if (numAiPlayers < 0) numAiPlayers = 1;
-        int maxHumanPlayers = tryParseInt((String)maxHumanPlayersText.getText());
+        int maxHumanPlayers = tryParseInt(maxHumanPlayersText.getText().toString());
         if ((maxHumanPlayers < 1) || (maxHumanPlayers <= 1 && numAiPlayers < 1))
             maxHumanPlayers = 2;
-        String joinPassword = (String)joiningPasswordText.getText();
+        String joinPassword = joiningPasswordText.getText().toString();
         boolean explodingKittensExpansion = explodingKittensCheck.isChecked();
         boolean streakingDoggosExpansion = explodingKittensCheck.isChecked();
         boolean meowingDoggosExpansion = explodingKittensCheck.isChecked();
         int expansionPack = (explodingKittensExpansion ? 1:0) + (streakingDoggosExpansion ? 1:0)<<1 + (meowingDoggosExpansion ? 1:0) << 2;
-
-        gameMaker = new GameMaker(25565, gameName, expansionPack, numAiPlayers, maxHumanPlayers, joinPassword);
-        startActivity(new Intent(this.getContext(), Game.class));
+        String finalGameName = gameName;
+        int finalNumAiPlayers = numAiPlayers;
+        int finalMaxHumanPlayers = maxHumanPlayers;
+        //GameServer.startNewThread(() -> {
+            GameHandler.gameMaker = new GameMaker(25565, finalGameName, expansionPack, finalNumAiPlayers, finalMaxHumanPlayers, joinPassword);
+            RemoteGameAdapter gameConnection = new RemoteGameAdapter(new RemoteGameDetails(localHost,25565,0),ImplodingDoggosUser.RandomUser());
+            new GameHandler(gameConnection);
+        //});
+        //getLayoutInflater().inflate(R.layout.fragment_lan_waiting_room, (ViewGroup) getView());
+        startActivity(new Intent(this.getContext(), LanWaitingRoom.class));
     }
     @Override
     public void onResume(){

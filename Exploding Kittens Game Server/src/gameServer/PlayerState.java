@@ -7,12 +7,12 @@ public class PlayerState implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	int playerId;
-	int numCards;
-	String name;
-	boolean isDead;
-	int turnsLeft;
-	long userId;
+	public int playerId;
+	public int numCards;
+	public String name;
+	public boolean isDead;
+	public int turnsLeft;
+	public long userId;
 }
 class CheatPlayerState extends PlayerState implements Serializable{
 	private static final long serialVersionUID = 1L;

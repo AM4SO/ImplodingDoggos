@@ -32,6 +32,9 @@
             android:name=".loginPage"
             android:exported="false" />
         <activity
+            android:name=".LanWaitingRoom"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:configChanges="orientation"
             android:exported="true">

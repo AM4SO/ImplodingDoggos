@@ -4,8 +4,11 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,34 +24,16 @@ import gameServer.Player;
  * create an instance of this fragment.
  */
 public class PlayerList extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    RecyclerView playerListView;
+    PlayerListViewAdapter adapter;
     public PlayerList() {
-        // Required empty public constructor
+        adapter = new PlayerListViewAdapter();
+        GameHandler.gameHandler.plrList = this;
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PlayerList.
-     */
     // TODO: Rename and change types and number of parameters
     public static PlayerList newInstance(String param1, String param2) {
         PlayerList fragment = new PlayerList();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -56,32 +41,37 @@ public class PlayerList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_player_list, container, false);
+        View ret = inflater.inflate(R.layout.fragment_player_list, container, false);;
+
+        playerListView = ret.findViewById(R.id.view_PlayerListView);
+        playerListView.setLayoutManager(new LinearLayoutManager(getContext()));
+        playerListView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+        return ret;
     }
 }
 
 class PlayerListViewAdapter extends RecyclerView.Adapter<PlayerListViewAdapter.ViewHolder>{
-    private ArrayList<CharSequence> chatMessages;
+    private ArrayList<ClientSidePlayer> players;
     private RecyclerView parent;
 
-    public void setPlayers(ArrayList<Player> mess){//TODO: create actual player object for this use.
-        chatMessages.add("");
-        this.notifyDataSetChanged();
-        parent.scrollBy(0,1000);
+    public void setPlayers(ArrayList<ClientSidePlayer> arr) {//TODO: create actual player object for this use.
+        new Handler(Looper.getMainLooper()).post(() ->{
+            players = arr;
+            this.notifyDataSetChanged();
+            parent.scrollBy(0, 1000);
+        });
     }
 
-    public ChatViewAdapter(){
-        chatMessages = new ArrayList<CharSequence>();
+    public PlayerListViewAdapter(){
+        players = GameHandler.gameHandler.players;
     }
 
     @Override
@@ -93,6 +83,7 @@ class PlayerListViewAdapter extends RecyclerView.Adapter<PlayerListViewAdapter.V
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // TODO: Create new item so not used text_chat_item
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_chat_item,parent,false);
 
         return new ViewHolder(view);
@@ -101,25 +92,22 @@ class PlayerListViewAdapter extends RecyclerView.Adapter<PlayerListViewAdapter.V
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TextView view = holder.getTextView();
-        view.setText("dfdf");
-        view.setPlayerObject("dfds");
+        ClientSidePlayer player = players.get(position);
+
+        view.setText(player.playerDetails.playerName);
         //view.setText(chatMessages.get(position)); -- get().
     }
 
     @Override
     public int getItemCount() {
-        return chatMessages.size();
+        return players.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{
         private final TextView textView;
-        private String playerObject;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.txt_chatItemMessageText);
-        }
-        public void setPlayerObject(String plrObj){
-            playerObject = plrObj;
         }
 
         public TextView getTextView() {

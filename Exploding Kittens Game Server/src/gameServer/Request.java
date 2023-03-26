@@ -1,5 +1,7 @@
 package gameServer;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import java.io.Serializable;
 
 import org.json.JSONObject;
@@ -41,10 +43,15 @@ public class Request implements Serializable{
 		ret.content = new RequestContent(RequestType.PlayCard);
 		return ret;
 	}
-	public static Request MessagePeersRequest(long userId, JSONObject message) {
-		return null;
+	public static Request MessagePeersRequest(long userId, String message) {
+		Request ret = new Request();
+		ret.userId = userId;
+		ret.content = new RequestContent(RequestType.MessagePeers);
+		ret.content.args = new Object[] {message};
+		return ret;
 	}
 	public static Request GameStateRequest() {
+		System.err.write(0);
 		return null;
 	}
 	public static Request Acknowledge(long userId) {
