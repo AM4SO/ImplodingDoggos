@@ -8,15 +8,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link PlayerListTurnView#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class PlayerListTurnView extends Fragment {
-
+    ArrayList<ClientSidePlayer> players;
+    int playerTurn;
     public PlayerListTurnView() {
-        // Required empty public constructor
+        players = GameHandler.gameHandler.players;
+        /// foreach player: instantiate fragment
+    }
+
+    public void playerAdded(ClientSidePlayer player){
+        // instantiate fragment
+    }
+
+    public void changePlayerTurn(int playerTurn){
+        // translate player fragments
     }
 
     public static PlayerListTurnView newInstance(String param1, String param2) {
