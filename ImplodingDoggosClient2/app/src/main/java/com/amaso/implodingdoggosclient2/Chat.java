@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import gameServer.PlayerState;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Chat#newInstance} factory method to
@@ -127,7 +129,8 @@ class ChatViewAdapter extends RecyclerView.Adapter<ChatViewAdapter.ChatItemViewH
     public void onBindViewHolder(@NonNull ChatItemViewHolder holder, int position) {
         TextView view = holder.getTextView();
         ChatMessageDetails message = chatMessagesDetails.get(position);
-
+        assert  message.player != null;
+        assert  message.message != null;
         view.setText(message.player.playerName.concat(": ").concat(message.message));
     }
 

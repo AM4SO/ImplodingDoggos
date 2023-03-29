@@ -4,45 +4,41 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewPropertyAnimator;
 import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link PlayerView#newInstance} factory method to
- * create an instance of this fragment.
- */
+import org.jetbrains.annotations.NotNull;
+
 public class PlayerView extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String PLAYER_NAME = "DEFAULT";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String PLAYER_ID = "playerId";
 
     // TODO: Rename and change types of parameters
-    private String playerName;
-    private String mParam2;
+    private int playerId;
+
+    ClientSidePlayer player;
+    int thisTurnNumber;
+    int plrGo = 0;
+    private int width,height;
 
     public PlayerView() {
-        // Required empty public constructor
     }
+    public void changeTurn(int turn){
+        plrGo = turn;
+    }
+    /*public void setPlayer(int playerId){
+    }*/
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param playerName Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PlayerView.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PlayerView newInstance(String playerName, String param2) {
+    public static PlayerView newInstance(int playerId) {
         PlayerView fragment = new PlayerView();
         Bundle args = new Bundle();
-        args.putString(PLAYER_NAME, playerName);
-        args.putString(ARG_PARAM2, param2);
+        args.putInt(PLAYER_ID, playerId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -50,10 +46,40 @@ public class PlayerView extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        assert getArguments() != null;
         if (getArguments() != null) {
-            playerName = getArguments().getString(PLAYER_NAME);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            playerId = getArguments().getInt(PLAYER_ID);
+            player = ClientSidePlayer.getPlayerByPlayerId(playerId);
+            assert player != null;
         }
+    }
+    private void updatePos(View view){
+
+        new Thread(() -> {
+            ViewPropertyAnimator animator = view.animate();
+            double c = (4*Math.PI / 6);//GameHandler.gameHandler.players.size());
+            while (true){
+                double t = Math.PI + (plrGo+thisTurnNumber) * c;
+                double x = x(t);
+                double y = y(t);
+                this.getActivity().runOnUiThread(() -> {
+                    animator.setDuration(2000);
+                    animator.translationX((float)x).translationY((float)y).start();
+                });
+                plrGo++;
+                try {
+                    Thread.sleep(animator.getDuration());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+    private double y(double t){
+        return 150 * (-1 * Math.sin(0.5*t) + 0.8);
+    }
+    private double x(double t){
+        return 150 * (-3 * Math.cos(0.5*t) + 2.6);
     }
 
     @Override
@@ -62,7 +88,12 @@ public class PlayerView extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_player_view, container, false);
         TextView textView = view.findViewById(R.id.txt_plrName);
-        textView.setText(playerName);
+        textView.setText(player.playerDetails.playerName);
+        width = view.getWidth();
+        height = view.getHeight();
+        Log.i(String.valueOf(width),String.valueOf(height));
+        
+        updatePos(view);
 
         return view;
     }

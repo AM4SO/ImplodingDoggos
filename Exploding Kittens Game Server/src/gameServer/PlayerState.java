@@ -9,7 +9,6 @@ public class PlayerState implements Serializable{
 	private static final long serialVersionUID = 1L;
 	public int playerId;
 	public int numCards;
-	public String name;
 	public boolean isDead;
 	public int turnsLeft;
 	public long userId;

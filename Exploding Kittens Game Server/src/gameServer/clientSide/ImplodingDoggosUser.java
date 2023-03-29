@@ -4,6 +4,7 @@ import java.util.Random;
 
 public class ImplodingDoggosUser {
 	public final long userId, sessionToken;
+	public String username;
 	public ImplodingDoggosUser(long userId, long sessionId) {
 		this.userId = userId;
 		this.sessionToken = sessionId;

@@ -50,7 +50,6 @@ public class Player {
 		ret.playerId = playerId;
 		ret.numCards = cards.cards.size();
 		ret.isDead = isDead;
-		ret.name = name;
 		ret.turnsLeft = turnsLeft;
 		ret.userId = userId;
 		

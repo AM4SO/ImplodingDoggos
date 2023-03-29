@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -17,7 +16,6 @@ import gameServer.GameMaker;
 import gameServer.GameServer;
 import gameServer.GameState;
 import gameServer.HandState;
-import gameServer.Player;
 import gameServer.PlayerState;
 import gameServer.Request;
 import gameServer.clientSide.ImplodingDoggosUser;
@@ -37,30 +35,35 @@ public class GameHandler {
     public RemoteGameAdapter game;
     public ImplodingDoggosUser localUser;
     public GameHandler(RemoteGameAdapter game){// Pass through a connector object to the game.
-        GameServer.startNewThread(() -> {
-            game.connectToGame();
-        });
+
         this.game = game;
         localUser = game.getUser();
 
         GameHandler.gameHandler = this;
         game.setRemoteGameMessageAdapter(new GameMessageHandler(this));
         peerMessageHandler = new PeerMessageHandler(this);
+        // Temporary: Should import player details from ImplodingDoggosUser
         localPlayer = new ClientSidePlayer();
+        localPlayer.playerState = new PlayerState();
         localPlayer.playerDetails = new PlayerDetails();
         localPlayer.playerDetails.playerName = "AMASO";
-        localPlayer.playerDetails.userId = localUser.userId;
+        localPlayer.playerState.userId = localUser.userId;
+        localPlayer.playerState.playerId = 1;
         localPlayer.playerDetails.assetPack = new PlayerAssetPack();
         localPlayer.playerState = new PlayerState();
 
         players = new ArrayList<ClientSidePlayer>();
         players.add(localPlayer);
         if(plrList != null) plrList.adapter.setPlayers(players);
+
+        GameServer.startNewThread(() -> {
+            game.connectToGame();
+        });
     }
 
     public void sendChatMessage(String chatMessage){
         PeerMessage peerMessage = new PeerMessage(PeerMessageType.ChatMessage);
-        peerMessage.userId = localUser.userId;
+        peerMessage.playerId = localPlayer.playerState.playerId;
         peerMessage.args = new Object[]{chatMessage};
         Request req = Request.MessagePeersRequest(localUser.userId,PeerMessage.Serialize(peerMessage));
         game.makeRequestAsync(req);
@@ -74,15 +77,15 @@ public class GameHandler {
     }
 }
 class ClientSidePlayer{
-    private static ArrayList<ClientSidePlayer> players = new ArrayList<ClientSidePlayer>();
+    private static ArrayList<ClientSidePlayer> players = new ArrayList<>();
     public static ClientSidePlayer getPlayerByUserId(long userId) {
-        for (ClientSidePlayer p : ClientSidePlayer.players) {
-            if (p.playerDetails.userId == userId) return p;
+        for (ClientSidePlayer p : ClientSidePlayer.players) { // Won't work until gameState has been received.
+            if (p.playerState.userId == userId) return p;
         }
         return null;
     }public static ClientSidePlayer getPlayerByPlayerId(int playerId){
         for (ClientSidePlayer p : players){
-            if (p.playerDetails.playerId == playerId) return p;
+            if (p.playerState.playerId == playerId) return p;
         }
         return null;
     }
@@ -118,14 +121,17 @@ class PeerMessageHandler implements  PeerMessageInterface{
         //if (message.args == null) return;
         String messageText = (String)message.args[0];
         //String messageText = message.
-        long userId = message.userId;
-        ChatMessageDetails chatMessage = new ChatMessageDetails(ClientSidePlayer.getPlayerByUserId(userId).playerDetails,messageText);
+        ClientSidePlayer sender = ClientSidePlayer.getPlayerByPlayerId(message.playerId);
+        assert sender != null;
+        Log.i("PLAYER NAME", String.valueOf(sender == parentGame.localPlayer));
+        ChatMessageDetails chatMessage = new ChatMessageDetails(sender.playerDetails,messageText);
         parentGame.addReceivedChatMessage(chatMessage);
     }
 
     @Override
     public void onPlayerDetailsReceived(PeerMessage message) {
-        ClientSidePlayer player = ClientSidePlayer.getPlayerByUserId(message.userId);
+        ClientSidePlayer player = ClientSidePlayer.getPlayerByPlayerId(message.playerId);
+        assert player != null;
         PlayerDetails receivedDetails = (PlayerDetails)message.args[0];
         player.playerDetails = receivedDetails;
     }
@@ -142,7 +148,7 @@ class PlayerInformationPack{
 
 }
 class PeerMessage implements Serializable {
-    static long defaultUserId;
+    static int defaultPlayerId = -1;
     public static String Serialize(PeerMessage message){
         try {
             ByteArrayOutputStream byteOutput = new ByteArrayOutputStream();
@@ -167,13 +173,14 @@ class PeerMessage implements Serializable {
             return null;
         }
     }
-    public long userId;
+    //public long userId;
+    public int playerId;
     public PeerMessageType messageType;
     public Object[] args;
     public PeerMessage(PeerMessageType messageType){
         this.messageType = messageType;
         args = new Object[]{};
-        userId = PeerMessage.defaultUserId;
+        playerId = PeerMessage.defaultPlayerId;
     }
     public String serialize(){return PeerMessage.Serialize(this);}
 }
@@ -184,23 +191,10 @@ enum PeerMessageType{
 }
 class PlayerDetails implements Serializable{
     static ArrayList<PlayerDetails> players = new ArrayList<>();
-    public static PlayerDetails getPlayerByUserId(long userId) {
-        for (PlayerDetails p : PlayerDetails.players) {
-            if (p.userId == userId) return p;
-        }
-        return null;
-    }public static PlayerDetails getPlayerByPlayerId(int playerId){
-        for (PlayerDetails p : PlayerDetails.players){
-            if (p.playerId == playerId) return p;
-        }
-        return null;
-    }
 
     public PlayerDetails(){
         players.add(this);
     }
-    public int playerId;
-    public long userId;
     public String playerName;
     public PlayerAssetPack assetPack;
 }
@@ -225,20 +219,18 @@ class GameMessageHandler implements RemoteGameMessageAdapter {
 
     @Override
     public void onGameStateReceived(GameState gameState) { // Requires to acknowledge
-        gameState.players.forEach((plr) -> {
-            if (ClientSidePlayer.getPlayerByPlayerId(plr.playerId) == null){
-                ClientSidePlayer newPlayer = new ClientSidePlayer();
-                newPlayer.playerDetails = new PlayerDetails();
-                newPlayer.playerDetails.playerName = plr.name;
-                newPlayer.playerDetails.playerId = plr.playerId;
-                newPlayer.playerDetails.userId = plr.userId;
-                parentGame.players.add(newPlayer);
-
-                // num cards and shit
+        gameState.players.forEach((plrState) -> {
+            ClientSidePlayer plr = ClientSidePlayer.getPlayerByPlayerId(plrState.playerId);
+            if (plr == null){
+                plr = new ClientSidePlayer();
+                parentGame.players.add(plr);
+                plr.playerDetails = new PlayerDetails();
+                plr.playerDetails.playerName = "BOT";
             }
+            plr.playerState = plrState;
         });
-        parentGame.plrList.adapter.setPlayers(parentGame.players);
-        parentGame.game.sendAcknowledge();
+        if (parentGame.plrList != null) parentGame.plrList.adapter.setPlayers(parentGame.players);
+        //parentGame.game.sendAcknowledge();
     }
 
     @Override
@@ -246,8 +238,11 @@ class GameMessageHandler implements RemoteGameMessageAdapter {
         ClientSidePlayer player = new ClientSidePlayer();
         player.playerState = new PlayerState();
         player.playerState.playerId = playerId;
+        player.playerDetails = new PlayerDetails();
+        player.playerDetails.playerName = "BOT";
         parentGame.players.add(player);
-        if(parentGame.plrList != null)parentGame.plrList.adapter.setPlayers(parentGame.players);
+        if(parentGame.plrList != null) parentGame.plrList.adapter.setPlayers(parentGame.players);
+        PlayerListTurnView.ActiveView.playerAdded(player);
     }
 
     @Override

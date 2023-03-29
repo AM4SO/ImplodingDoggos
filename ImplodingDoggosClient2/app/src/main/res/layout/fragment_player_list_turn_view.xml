@@ -12,16 +12,11 @@
         android:background="#20B00010"
         android:gravity="center"
         android:orientation="horizontal"
-        android:padding="20dp">
+        android:padding="20dp"
+        android:id="@+id/playerContainer"
+        android:minHeight="153dp">
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerView5"
-            android:name="com.amaso.implodingdoggosclient2.PlayerView"
-            android:layout_width="133dp"
-            android:layout_height="133dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:layout="@layout/fragment_player_view" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

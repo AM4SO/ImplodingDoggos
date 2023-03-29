@@ -21,28 +21,14 @@
         tools:layout="@layout/fragment_chat" />
 
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/playerTurnListView"
+        android:name="com.amaso.implodingdoggosclient2.PlayerListTurnView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="193dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView"
-        android:gravity="center"
-        android:padding="20dp">
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragmentContainerView5"
-            android:name="com.amaso.implodingdoggosclient2.PlayerView"
-            android:layout_width="133dp"
-            android:layout_height="133dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.283"
-            tools:layout="@layout/fragment_player_view" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        tools:layout="@layout/fragment_player_list_turn_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

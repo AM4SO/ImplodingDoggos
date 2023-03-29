@@ -37,19 +37,19 @@ public class Game extends AppCompatActivity {
 
         thisView = findViewById(R.id.root);
 
-        findViewById(R.id.fragmentContainerView5).setOnClickListener((view) -> {
-            Log.i("BIG COOL KITTY", "         OUCHY THAT HURT");
-        });
-        View v = findViewById(R.id.fragmentContainerView5);
+        //findViewById(R.id.fragmentContainerView5).setOnClickListener((view) -> {
+        //    Log.i("BIG COOL KITTY", "         OUCHY THAT HURT");
+        //});
+        //View v = findViewById(R.id.fragmentContainerView5);
 
 
-        PlayerView newPlr = PlayerView.newInstance("AMASO","doens't matter");
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.root, newPlr);
-        fragmentTransaction.commitNow();
+        //PlayerView newPlr = PlayerView.newInstance(0);
+        //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //fragmentTransaction.add(R.id.root, newPlr);
+        //fragmentTransaction.commitNow();
 
-        Thread x = new Thread(() -> moveThingy());
-        x.start();
+        //Thread x = new Thread(() -> moveThingy());
+        //x.start();
     }
     protected void moveThingy(){
         View view = findViewById(R.id.fragmentContainerView5);

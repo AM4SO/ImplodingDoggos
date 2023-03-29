@@ -222,6 +222,7 @@ public class GameServer {
 		Player player = (Player) plr;
 		assert(player != null);
 		game.playerJoined.set(player);
+		player.userCommunicator.sendRequestMessage(ClientMessage.FullGameState(game.getGameState(player)));
 	}
 	public static void onPlayerRequestReceived(Object plrReqPair) {
 		PlayerRequestPair plrRequest = (PlayerRequestPair) plrReqPair;
