@@ -7,11 +7,9 @@ import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.Switch;
 
-import com.amaso.implodingdoggosclient2.ui.main.SectionsPagerAdapter;
+import com.amaso.implodingdoggosclient2.ui.main.LanSetupPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 //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
@@ -37,7 +35,7 @@ public class playLocalSetup extends AppCompatActivity {
         ViewPager2 viewPager = findViewById(R.id.viewPager);           //new ViewPager2(this);//binding.viewPager;
         TabLayout tabs = findViewById(R.id.tabs);                      //binding.tabs;
 
-        viewPager.setAdapter(new SectionsPagerAdapter(this));
+        viewPager.setAdapter(new LanSetupPagerAdapter(this));
         new TabLayoutMediator(tabs, viewPager, (tab, position) -> {
             CharSequence txt;
             if (position == 0) txt = "Host LAN Game";

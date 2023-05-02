@@ -40,7 +40,7 @@ public class LanWaitingRoom extends AppCompatActivity {
 
         findViewById(R.id.btn_startGame).setClickable(GameHandler.gameMaker != null);
         findViewById(R.id.btn_startGame).setOnClickListener((v) -> {
-            GameServer.startNewThread(() -> GameHandler.gameMaker.startGame());// TODO: Check: should be async?
+            GameServer.startNewThread(() -> GameHandler.gameMaker.startGame());
             findViewById(R.id.btn_startGame).setClickable(false);
             startActivity(new Intent(v.getContext(),Game.class));
         });

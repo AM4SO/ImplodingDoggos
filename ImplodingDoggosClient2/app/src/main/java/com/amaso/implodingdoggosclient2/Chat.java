@@ -32,7 +32,8 @@ public class Chat extends Fragment {
     private PlayerDetails localPlayerDetails;
     public Chat() {
         chatHandler = new ChatViewAdapter();
-        GameHandler.gameHandler.chat = this;
+        if (GameHandler.gameHandler != null)
+            GameHandler.gameHandler.chat = this;
         // Required empty public constructor
     }
     public static Chat newInstance() {
@@ -67,7 +68,8 @@ public class Chat extends Fragment {
             }
             addMessage(message);
             chatInput.setText("");
-            GameHandler.gameHandler.sendChatMessage(message.toString());
+            if (GameHandler.gameHandler != null)
+                GameHandler.gameHandler.sendChatMessage(message.toString());
         });
         localPlayerDetails = new PlayerDetails();
         localPlayerDetails.playerName = "You";
@@ -93,11 +95,6 @@ class ChatViewAdapter extends RecyclerView.Adapter<ChatViewAdapter.ChatItemViewH
     private ArrayList<ChatMessageDetails> chatMessagesDetails;
     private RecyclerView parent;
 
-    public void addMessage(CharSequence mess){
-        chatMessages.add(mess);
-        this.notifyDataSetChanged();
-        parent.scrollBy(0, 1000);
-    }
     public void addMessage(ChatMessageDetails message){
         new Handler(Looper.getMainLooper()).post(() -> {
             chatMessagesDetails.add(message);

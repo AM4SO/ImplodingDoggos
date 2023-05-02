@@ -63,11 +63,12 @@
         android:layout_height="322dp"
         app:layout_constraintEnd_toEndOf="@+id/lbl_watingRoomChat"
         app:layout_constraintStart_toStartOf="@+id/lbl_watingRoomChat"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_watingRoomChat" />
+        app:layout_constraintTop_toBottomOf="@+id/lbl_watingRoomChat"
+        tools:layout="@layout/fragment_chat"/>
 
     <TextView
         android:id="@+id/lbl_watingRoomChat"
-        android:layout_width="615dp"
+        android:layout_width="614dp"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"

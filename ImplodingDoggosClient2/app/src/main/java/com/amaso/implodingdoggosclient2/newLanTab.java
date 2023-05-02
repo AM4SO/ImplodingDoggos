@@ -72,16 +72,24 @@ public class newLanTab extends Fragment {
         String gameName = gameNameText.getText().toString();
         if (gameName == "")
             gameName = "Some unnamed game";
+
         int numAiPlayers = tryParseInt(numAiPlayersText.getText().toString());
         if (numAiPlayers < 0) numAiPlayers = 1;
+
         int maxHumanPlayers = tryParseInt(maxHumanPlayersText.getText().toString());
         if ((maxHumanPlayers < 1) || (maxHumanPlayers <= 1 && numAiPlayers < 1))
             maxHumanPlayers = 2;
+
         String joinPassword = joiningPasswordText.getText().toString();
+
         boolean explodingKittensExpansion = explodingKittensCheck.isChecked();
         boolean streakingDoggosExpansion = explodingKittensCheck.isChecked();
         boolean meowingDoggosExpansion = explodingKittensCheck.isChecked();
-        int expansionPack = (explodingKittensExpansion ? 1:0) + (streakingDoggosExpansion ? 1:0)<<1 + (meowingDoggosExpansion ? 1:0) << 2;
+
+        int expansionPack = (explodingKittensExpansion ? 1:0)
+                          | (streakingDoggosExpansion ? 1:0) << 1
+                          | (meowingDoggosExpansion ? 1:0)   << 2;
+
         String finalGameName = gameName;
         int finalNumAiPlayers = numAiPlayers;
         int finalMaxHumanPlayers = maxHumanPlayers;
