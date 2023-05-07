@@ -94,6 +94,7 @@ public class newLanTab extends Fragment {
         int finalNumAiPlayers = numAiPlayers;
         int finalMaxHumanPlayers = maxHumanPlayers;
         //GameServer.startNewThread(() -> {
+        Log.i("New LAN game tab","Gameserver instance being created");
             GameHandler.gameMaker = new GameMaker(25565, finalGameName, expansionPack, finalNumAiPlayers, finalMaxHumanPlayers, joinPassword);
             RemoteGameAdapter gameConnection = new RemoteGameAdapter(new RemoteGameDetails(localHost,25565,0),ImplodingDoggosUser.RandomUser());
             new GameHandler(gameConnection);

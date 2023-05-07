@@ -30,7 +30,8 @@ public class GameServer {
 	ServerListener listener;
 	Thread playerJoinThread;
 	
-	public GameState getGameState(Player player) {
+	public GameState getGameState(Player player) { // function to get a serializable object 
+		// description of the game to send to the client. 
 		GameState gameState = new GameState();
 		gameState.cards = Card.getAllCardStates();
 		gameState.localPlayerHand = player.cards.getHandState();
@@ -49,9 +50,6 @@ public class GameServer {
 		disposePile = new ArrayList<Card>();
 		players = new ArrayList<Player>();
 		
-		// below thread will only run until waitingForPlayers is false
-		//new Thread(() -> {HumanPlayer.PlayerCreationHandler();}).start();
-		
 		listener = new ServerListener(port);
 		System.out.println("Starting listener");
 		listener.start();
@@ -59,7 +57,9 @@ public class GameServer {
 		playerJoinThread = new Thread(() -> allowPlayerJoining());
 		playerJoinThread.start();
 	}
-	public void allowPlayerJoining() {
+	public void allowPlayerJoining() { // a function which blocks off until no longer waiting 
+		// for players to join the game. When players try to connect, it will add them to the 
+		// list of players.
 		boolean enoughPlayers = false;
 		while (waitingForPlayers) { // Pause thread, tell other thread to awake this thread in x time, and tell otherer thread to
 			///                     Tell this thread when plr joined. -- Thread.Notify();
@@ -73,30 +73,13 @@ public class GameServer {
 			playerJoined.reset();
 		}
 	}
-	public void init() {
-		//players.add(new GameTestingPlayer());
-		//players.add(new GameTestingPlayer());
-		
-		//// Give players time to join the game
-		/*boolean enoughPlayers = false;
-		while (!enoughPlayers) { // Pause thread, tell other thread to awake this thread in x time, and tell otherer thread to
-			///                     Tell this thread when plr joined. -- Thread.Notify();
-			int waitTime = 6000;//// If there aren't enough players to start the game, wait 30 secs for players to join
-			if (players.size() < GameServer.minPlayers) waitTime = 30000;////  Else, only wait 7 secs as more players aren't required
-			if(Functions.waitTimeOrTrue(waitTime, playerJoined)) { // If player joined, add them to list of players. 
-				Player plr = (Player) playerJoined.arg;
-				System.out.println(plr.name.concat(" is being added to the list of players"));
-				players.add(plr);
-			}else if (players.size() >= GameServer.minPlayers) enoughPlayers = true; // break loop if no players join and we dont need more.
-			playerJoined.reset();
-		}
-		
-		waitingForPlayers = false;*/
+	public void init() { // readies the game for starting after the players have joined.
 		waitingForPlayers = false;
 		playerJoinThread.interrupt();
 		
+
 		drawPile = new CardStack(players.size());
-		
+		// Would be better off putting below code in constructor of CardStack		
 		for (Player p: players) {
 			p.cards.addCard(new Card(CardType.Defuse));
 			for (int i = 0; i < 7; i++) {
@@ -107,26 +90,24 @@ public class GameServer {
 		
 		System.out.println("Initialised game");
 	}
-	public void awaitAcknowledgeAll() {
+	public void awaitAcknowledgeAll() { // waits until players have sent an acknowledge message
+		// to the server. 
 		for (Player p : players) {
 			while (!p.acknowledged)
 				try {
 					Thread.sleep(50);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			System.out.println(p.name.concat(" has acknowledged"));
 		}
 	}
 	public void startServer() {
-		//while(waitingForPlayers) continue;
 		ArrayList<ClientMessage> states = new ArrayList<ClientMessage>();
 		for (Player p : players) {
 			states.add(ClientMessage.FullGameState(getGameState(p)));
 		}
 		sendToPlayers(players, states);
-		//awaitAcknowledgeAll();
 		
 		System.out.println("Starting game");
 		while (Player.totalPlayers - Player.playersDead > 1) {

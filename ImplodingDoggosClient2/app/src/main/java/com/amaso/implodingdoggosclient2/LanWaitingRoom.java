@@ -9,6 +9,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public class LanWaitingRoom extends AppCompatActivity {
 
         findViewById(R.id.btn_startGame).setClickable(GameHandler.gameMaker != null);
         findViewById(R.id.btn_startGame).setOnClickListener((v) -> {
+            Log.i("LAN waiting room", "Start game button pressed");
             GameServer.startNewThread(() -> GameHandler.gameMaker.startGame());
             findViewById(R.id.btn_startGame).setClickable(false);
             startActivity(new Intent(v.getContext(),Game.class));
